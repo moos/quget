@@ -1,0 +1,32 @@
+{
+  "name": "jqget",
+  "version": "0.0.0",
+  "description": "jQuery-like Ajax get/load for the node.js command-line",
+  "main": "jqget.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/moos/jqget"
+  },
+  "keywords": [
+    "jquery",
+    "wget",
+    "cheerio",
+    "request",
+    "scrapper"
+  ],
+  "author": "Moos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/moos/jqget/issues"
+  },
+  "homepage": "https://github.com/moos/jqget",
+  "dependencies": {
+    "commander": "^2.3.0",
+    "chalk": "^0.5.1",
+    "request": "^2.44.0",
+    "cheerio": "^0.17.0"
+  }
+}
