@@ -1,8 +1,9 @@
 {
   "name": "quget",
-  "version": "0.0.0",
-  "description": "jQuery-like Ajax get/load for the node.js command-line",
-  "main": "quget.js",
+  "version": "0.2",
+  "description": "A query selector-based wget CLI for node.js, like jQuery's load()",
+  "main": "src/quget.js",
+  "bin": "bin/cli.js",
   "repository": {
     "type": "git",
     "url": "http://github.com/moos/quget"
@@ -24,21 +25,13 @@
     "chalk": "^0.5.1",
     "cheerio": "^0.17.0",
     "commander": "^2.3.0",
-    "promptly": "^0.2.0",
     "request": "^2.44.0",
-    "underscore.string": "^2.3.3",
-    "markup-js": "^1.5.20",
-    "columnify": "^1.2.1"
+    "promptly": "^0.2.0",
+    "markup-js": "^1.5.20"
   },
   "devDependencies": {
-    "npm-watch": "0.0.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "blah": "node quget.js",
-    "watch": "npm-watch"
-  },
-  "watch": {
-    "blah": "quget.js,./node_modules/markup-js/src/*.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }

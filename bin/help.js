@@ -1,5 +1,5 @@
 
-exports = function(program) {
+module.exports = function(program) {
 
   program
     .command('help [what]')
