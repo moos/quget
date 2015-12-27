@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script>
+    var games = [
+      [ 'diet', 'dint', 'bint', 'bints', 'dints', 'hints', 'chints', 'chinas', 'china', 'chin', 'shin', 'shiny', 'shinny', 'skinny' ],
+      [ 'java', 'cava', 'capa', 'scapa', 'scape', 'scrape', 'scrap', 'scrip', 'script' ],
+      [ 'hack', 'hock', 'nock', 'nook', 'noob', 'nob', 'nod', 'node' ],
+      [ 'lies', 'lits', 'tits', 'tuts', 'ruts', 'ruth', 'truth' ],
+      [ 'work', 'wonk', 'monk', 'mony', 'money' ],
+      [ 'apple', 'ample', 'amble', 'able', 'ale', 'age', 'rage', 'range', 'orange' ]
+      ];
+
+    function buildBlocks($root, words){
+      words.forEach(function(word, i){
+        get$word(i).append(word.split('').map( get$letter )).appendTo($root);
+      });
+    }
+
+    function get$letter(x, i){
+      return jQuery('<div class="letter letter-'+ i +'"><input type="text" maxlength="1" placeholder="-"/></div>');
+    }
+
+    function get$word(i){
+      return jQuery('<div class="word word-'+ i +'" data-index="'+ i +'"></div>');
+    }
+
+    function fillWord(i, word){
+      jQuery('.word-' + i).find('.letter').each(function(i){
+        jQuery(this).html(word[i]);
+      });
+    }
+
+    function setLevel(lev) {
+      if (lev === level) return false;
+      var loc = location.href.replace(location.search,'') + '?game=' + game + '&level=' + lev;
+      location.href = loc;
+      return false;
+    }
+
+    var
+      game,
+      levels = [0.7, 0.5, 0.3, 0.1, 0.05],
+      level,
+      fillFactor,
+      fidgetFactor = .05;
+
+    function fillRandom(x, i){
+      // skip first and last
+      if (i === 0 /*|| i === words.length - 1*/) return;
+      fillFactor = levels[level];
+      var word = words[i],
+        len = word.length,
+        $word = jQuery('.word-' + i),
+        fidget = fidgetFactor * (Math.random() > .5 ? 1 : -1),
+        count = Math.ceil(len * fillFactor * (1 + fidget));
+
+      console.log(level, fillFactor, count)
+      // TODO may reveal changed letter from previous word!!
+
+      while(count > 0 && count--) {
+        var n = Math.floor(Math.random() * len); // TODO may be duplicate!!
+        $word.find('.letter-' + n).html(word[n]);
+      };
+    }
+
+    function getVal($el){
+      var val = '';
+      $el.find('*').each(function(){
+        val += $(this).val() || $(this).text();
+      });
+      return val;
+    }
+
+    function finalize(n, $el){
+      fillWord(n, words[n]);
+      $el.addClass('correct');
+    }
+
+    jQuery(function(){
+
+      // pick ?game=<n> or random game
+      game = location.search.match(/game=(\d+)/);
+      if (!game || (game = game[1]) < 1 || game > games.length) {
+        game = Math.floor(Math.random() * games.length);
+      }
+      words = games[game];
+
+      // pick level
+      level = location.search.match(/level=(\d+)/);
+      if (!level || (level = level[1]) < 1 || level > levels.length) {
+        level = 2;
+      }
+
+      buildBlocks(jQuery('#canv'), words);
+      fillWord(0, words[0]);
+
+      words.forEach(fillRandom);
+
+      jQuery('.letter input')
+        .on('focus', function(){
+          var $el = $(this);
+//          $el.val() && /*$el.attr('placeholder', $el.val()) &&*/ $el.val('');
+        })
+        .on('keyup', function(){
+          var $el = $(this),
+            val = $el.val(),
+            $word = $el.closest('.word'),
+            n = $word.data('index'),
+            value = getVal($word);
+
+          if (value === words[n]) {
+            finalize(n, $word);
+          } else {
+//            val && $el.attr('placeholder', val);
+          }
+        });
+    })
+
+  </script>
+  <style type="text/css">
+    .word {
+      margin-right: 2em;
+    }
+    .word.correct .letter {
+      background-color: palegreen;
+    }
+
+    .word:last-child .letter,
+    .word:first-child .letter {
+      background-color: burlywood ;
+    }
+
+    .letter, .letter input {
+      font-family: Monaco, Consolas, "Lucida Console", monospace;
+      font-size: 42px;
+    }
+    .letter {
+      border: 1px solid cornflowerblue;
+      display: inline-block;
+      text-align: center;
+      width: 40px;
+      height: 50px;
+      padding: 1px;
+      margin: 4px;
+    }
+    .letter:active,
+    .letter:focus {
+      outline-offset: -2px;
+      outline: -webkit-focus-ring-color auto 5px;
+    }
+
+    .letter input {
+      width: 90%;
+      height: 90%;
+      border: 0;
+      overflow: hidden;
+      background-color: transparent;
+      cursor: pointer;
+      color: #888;
+    }
+    .letter input:focus {
+      outline: none;
+    }
+
+    #footer {
+      margin-top: 2em;
+    }
+
+    #footer a {
+      display: inline-block;
+      padding: 0 4px;
+    }
+  </style>
+</head>
+<body>
+<h1>Worphing</h1>
+<div id="canv"></div>
+
+<div id="footer">
+<script>
+  // sorry 'bout this
+  document.write('<a href="view-source:'+ location.href +'" target="_blank">hint</a>');
+</script>
+<a href="#" onclick="location.reload(); return false;">new game</a>
+Level:
+<a href="#" onclick="return setLevel(0);">dim-wit</a>
+<a href="#" onclick="return setLevel(1);">half-wit</a>
+<a href="#" onclick="return setLevel(2);">wit-full</a>
+<a href="#" onclick="return setLevel(3);">wit-ness</a>
+<a href="#" onclick="return setLevel(4);">wit-a-balooza</a>
+</div>
+</body>
+</html>

@@ -1,122 +1,165 @@
-#!/usr/bin/env node
 var
-  program = require('commander'),
-  chalk = require('chalk'),
-  version = '0.0.0.1';
-
-var xGoods = 'text,html,val,attr:<name>,css:<name>,data:<name>',
-  xtract = [];
-
-program
-  .version(version)
-  .usage('[options] <url> [selector]')
-//  .option('--html', 'output HTML (default) (aliad of -x html)')
-  .option('--text', 'output text instead of html (alias of -x text)')
-
-  .option('-x, --extract <part>', 'extraction command, <part> is comma separated list of: ' +  xGoods,
-    function(what){
-      var
-        sep = ',',
-        goods = sep + (xGoods).replace(/<name>/g,'') + sep,
-        params = what.split(sep),
-        p;
-
-      params.forEach(function(w){
-
-        p = w.replace(/:.*/,':');
-
-        console.log( w, p, goods)
-
-        if (goods.indexOf(sep + p + sep) === -1 &&
-          goods.indexOf(sep + p.replace(':','')) === -1) {
-
-          console.error(error('Bad argument: ' + w));
-          program.help(); // exits
-        }
-
-        xtract.push(w)
-      });
-
-      return params;
-  })
-
-//  .option('-t, --traverse <where>', 'traverse command, <where> is ...')
-
-  .option('--sep <seperator>', 'seperator for multiple matches', '\n')
-  .option('-l, --limit <count>', 'limit query to <count> matches', '0')
-  .option('-n, --linenumber [index]', 'add line numbers to output starting at <index>', '1')
-
-// request parameters
-//  .option('-m, --method <method>', 'One of get, post, put (Default: get)')
-//  .option('-d, --data', 'data to pass to request as key:value,...')
-
-  .option('-j, --json', 'full results object as JSON')
-  .parse(process.argv);
-
-if (program.linenumber === true) program.linenumber = 1;
+  _ = require('underscore'),
+  CSSwhat = require('CSSwhat'),
+  columnify = require('columnify'),
+//  xrayParse = require('x-ray-parse'),
+  _chalk;
 
 
-if (program.args.length < 1) return console.log(program.helpInformation());
+//console.log(xrayParse('div.bar@href@foo|trim |tram'));
+//return;
 
-//console.log(program) && return;
+var parts = [],
+  options = {},
+  $;
 
-var
-  request = require('request'),
-  url = program.args[0],
-  selector = program.args[1] || '';
+exports.run = function run(url, selector, opts) {
+//  console.log(arguments);
+  var
+    request = require('request');
 
-if (!xtract.length){
-  xtract = program.text ? ['text'] : ['html']
+  options = opts;
 
-//  xtract = program.extract;//.split(',');
-  console.log(xtract)
-}
+  // make request
+  request(url, function (err, response, html) {
+    if (err) {
+      console.log(error(err));
+      return;
+    }
 
-request(url, function (err, response, html) {
-  if (err) {
-    error(err);
-    return;
-  }
-  var output = '';
+    if (!selector) {
+      console.log(html);
+      return;
+    }
 
-  if (selector) {
     var cheerio = require('cheerio'),
-      $ = cheerio.load(html),
-      result = $(selector);
+      opt = {selectors: true},
+      Mark = require('markup-js'),
+      selectors = (selector.trim().split(/\s*,\s*/)), //.map(parse),
+//      selectorStr = _(selectors).pluck('selector').join(','),
+      cleanSelector = selectors..replace(/@\w+/g, '').replace(/\|\w+>?\w*/g, ''),  // SAFE?
+      coll = [],
+      results, str;
+
+    console.log(selector, 11, selectors, 22, selectorStr);
+    console.log(_(selectors).pluck('filters'))
+    return;
+
+    $ = cheerio.load(html, opt);
+    results = $(selectorStr);
+
+    initMark(Mark);
+
+//    console.log(cleanSelector, selectors, results[0]);
+//    console.log(results.text());
+
+
 
     // NOTE: text() returns for all matched elements, but html() for first one only!
-    if (result.length === 1) {
-      output = program.text ? result.text() : $.html(result);
-    } else {
-      var coll = [],
-        str;
-      result.each(function(i){
+    results.each(function (i) {
+//      console.log(111, this.selector, this);
+
+      this.index = i;
+
+      if (this.selector) {
+        var sel = selectors[this.selectorIndex],
+          attr = sel.match(/\@([\w-_]+)/g) || [0],
+          pipes = sel.match(/\|.*$/) || '',
+          tmpl = attr.map(attrize).map(tokenize).join(' ');
+
+        function attrize(attr){
+          return !attr ? 'text' : 'attr>' + attr.replace('@','');
+        }
+        function tokenize(token, index){
+          return '{{.|'+ token + pipes + '}}';
+        }
+
+        if (options.linenumber) tmpl = '{{index|inc}}. ' + tmpl;
+
+//        console.log(attr, tmpl)
+
+        str = Mark.up(tmpl, this);
+
+      } else if (options.template) {
+        str = Mark.up(options.template || '<no template give>', this);
+      } else {
 
         str = extract($, this);
-        if (program.linenumber) {
-          str = (+program.linenumber + i) + ' ' + str;
+        if (options.linenumber) {
+//        str = (+options.linenumber + i) + ' ' + str;
         }
-        coll.push(str);
-        if (program.limit > 0 && ++i >= program.limit) return false;
-      });
+      }
 
-      output = coll.join(program.sep);
-    }
-  } else {
-    output = html;
-  }
+      coll.push(str);
+      if (options.limit > 0 && ++i >= options.limit) return false;
+    });
 
-  console.log(output);
+    output = coll.join(options.sep);
+    console.log(output);
+//    output(coll);
+  });
 
-});
+}
+
+
+
+function initMark(Mark) {
+//  console.log('Mark.pipes', Object.keys(Mark.pipes).join());
+
+//  Mark.delimiter = ':';
+
+  Mark.includes.html = function(str){
+
+  };
+
+  Mark.pipes.text = function(str){
+//    console.log(112211, str, $(str).text());
+    return $(str).text();// + ' - ' + str.selector +  ' ' + str.selectorIndex;
+  };
+
+  Mark.pipes.attr = function(str, name){
+//    console.log('attr', str, name);
+    return $(str).attr(name) || '';
+  };
+
+  Mark.pipes.quote = function(str, text){
+    if (text === 'br') text = '\n';
+    return text + str + text;
+  };
+
+  Mark.pipes.before = function(str, text){
+    if (text === 'br') text = '\n';
+    return text + str;
+  };
+
+  Mark.pipes.after = function(str, text){
+    if (text === 'br') text = '\n';
+    return str + text;
+  };
+
+  Mark.pipes.inc = function(str, count){
+    count = count || 1;
+    return Number(str) + count;
+  };
+}
+
+
+function output(coll){
+
+  coll.forEach(function(item){
+    Object.keys(item).forEach(function(key){
+      console.log(item[key])
+    })
+  })
+}
 
 function extract($, result) {
   var obj = {},
     $result = $(result),
+    _s = require('underscore.string'),
     value, name;
 
-  xtract.forEach(function(what, i){
-
+  parts.forEach(function(what, i){
     if (what.indexOf(':') > -1) { // eg, attr:width
       what = what.split(':');
       name = what[1]; // width
@@ -127,15 +170,29 @@ function extract($, result) {
       value = $.html(result);
     } else {
       value = name ? $result[ what ](name) : $result[ what ]();
+      options.trim && (value = value.trim());
+      if (options.str && options.str in _s) {
+        value = _s[ options.str ](value);
+      }
     }
 
-    obj[ xtract[i] ] = value;
+    obj[ parts[i] ] = value;
   });
 
-//  console.log(obj)
-  return JSON.stringify(obj);
+  console.log(33333, obj)
+//  return JSON.stringify(obj);
+  return obj;
 }
 
 function error(text){
-  console.error(chalk.bold.red(text));
+
+  return chalk().bold.red(text);
+}
+
+function info(text){
+  return chalk().bold.green(text);
+}
+
+function chalk(){
+  return _chalk || (_chalk = require('chalk'));
 }
