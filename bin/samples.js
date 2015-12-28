@@ -1,56 +1,83 @@
-var utils = require('../src/utils')
+var utils = require('../src/utils'),
+  _ = require('underscore'),
   promptly = require('promptly');
 
 
-var sample_lables = [
-    '#1. Hacker News titles',
-    '#2. Hacker News titles and subtext',
-    '#3. Wikipedia\'s On This Day',
-    '#4. GitHub trending',
-    '#5. Underscore.string functions',
-    '#6. Beijing Air Twitter feed'
-  ],
-  sample_choices = [1,2,3,4,5,6],
-  sample_cmds = [
-    'http://news.ycombinator.com ".title > a" -l 6 -n',
-    'http://news.ycombinator.com ".title > a, .subtext|pack|after>br" -l 10',
-    'http://en.wikipedia.org/wiki/Main_Page "#mp-otd > p:first-of-type, #mp-otd > ul:first-of-type > li|tease>15"',
-    'https://github.com/trending?since=weekly ".repo-list-name|pack, .repo-list-description|tease>7|after>br" --limit 20',
-    'https://github.com/epeli/underscore.string "h2:contains(API) ~ h4" -n ',
-//    'https://github.com/adammark/Markup.js "h3:contains(Built-in pipes) ~ p|tease>7" -n --limit 45 ',
-    'https://twitter.com/BeijingAir "#stream-items-id > li div.tweet div.content p" --limit 25'
-  ];
+exports.init = function(program) {
+  program
+    .command('samples [N]')
+    .description('show samples, or run sample N')
+    .action(function () {
+      program.done = true;
+      action(program);
+    });
+}
 
-exports.action = function action(program){
-    var choice,
-      prompt;
+var samples = [{
+    label: 'Hacker News titles',
+    cmd  : 'http://news.ycombinator.com ".title > a" -l 7 -n'
+  }, {
+    label: 'Hacker News titles and subtext',
+    cmd: 'http://news.ycombinator.com ".title > a, .subtext|pack|after \\n|red" -l 14'
+  }, {
+    label: 'Wikipedia\'s On This Day',
+    cmd: 'http://en.wikipedia.org/wiki/Main_Page "#mp-otd > p:first-of-type, #mp-otd > ul:first-of-type > li|tease 15"'
+  }, {
+    label: 'GitHub trending',
+    cmd: 'https://github.com/trending?since=weekly ".repo-list-name|pack, .repo-list-description|tease 7|after \\n" --limit 20'
+  }, {
+    label: 'Markup filters',
+    cmd: 'https://github.com/adammark/Markup.js "h3:contains(Built-in pipes) ~ p|tease 9" -n --limit 45 '
+  }, {
+    label: 'Cheerio selectors',
+    cmd: 'https://github.com/fb55/css-select "h2:contains(Supported selectors) ~ ul li|pack|before \\n\\t "'
+  }, {
+    label: 'Beijing Air Twitter feed',
+    cmd: 'https://twitter.com/BeijingAir "#stream-items-id > li div.tweet div.content p" --limit 25'
+  }, {
+    label: 'Custom template',
+    cmd: 'https://twitter.com/BeijingAir "#stream-items-id > li div.tweet div.content p" --limit 25 -T "{{parent.children.1|text|red}}"'
+  }, {
+    label: 'Jeopardy!',
+    cmd: 'http://www.j-archive.com/showgame.php?game_id=5137 ".clue_text|bold, .clue div[onmouseover]@onmouseover|regex correct_response.>(.*?)<|gray|before \\n" --sep " / "'
+  }];
 
-    if (program.args[0]) {
-      choice = program.args[0];
-      if (choice > sample_choices.length || parseInt(choice, 10) != choice) {
-        console.log(utils.error('Incorrect sample number.'));
-      } else {
-        runSample(null, choice);
-        return;
-      }
+
+function action(program) {
+  var choice,
+    prompt;
+
+  if (program.args[0]) {
+    choice = program.args[0];
+    if (choice > samples.length || parseInt(choice, 10) != choice) {
+      console.log(utils.error('Incorrect sample number.'));
+    } else {
+      runSample(null, choice);
+      return;
     }
+  }
 
-    prompt = '\nChoose a sample to run:\n' + sample_lables.join('\n') + '\n> ';
-    promptly.choose(prompt, sample_choices, runSample);
+  // number the labels
+  _(samples).each(function(s, i){
+    s.label = (1+i) + '. ' + s.label;
+  });
+
+  prompt = '\nChoose a sample to run:\n' + _(samples).pluck('label').join('\n') + '\n\n> ';
+  promptly.choose(prompt, _.range(1, samples.length + 1), runSample);
 };
 
 
 var runSample = exports.runSample = function runSample(err, choice, silent, callback){
-  var sample_cmd = sample_cmds[ choice - 1],
+  var sample_cmd = _(samples).pluck('cmd')[ choice - 1],
     exec = require('child_process').exec,
     path = require('path'),
     cmd = 'node ./bin/' + path.basename(process.argv[1]) + ' ' + sample_cmd;
 
-  !silent && console.log(utils.info('Running:\n' + cmd + '\n'), utils.chalk.bold.magenta(sample_lables[choice - 1]), '\n');
-  exec(cmd, callback || function(err, stdout, stderr){
+  !silent && console.log(utils.info('Running:\n' + cmd + '\n'), utils.chalk.bold.magenta(_(samples).pluck('label')[choice - 1]));
+  exec(cmd, {} ,callback || function(err, stdout, stderr){
     err && console.log(err);
-    console.log(stdout);
     console.log(stderr);
+    console.log(stdout);
     process.exit();
   });
 };

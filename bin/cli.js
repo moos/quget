@@ -5,31 +5,20 @@ var
   version = require('../package.json').version,
   cmd;
 
-
 program
   .version(version)
-  .usage('[options] <url> [selector]')
+  .usage('[command] [options] <url> [selector]\n'
+    + '\n  Example: quget http://news.ycombinator.com ".title > a|bold|red" -l 5')
   .option('-T, --template <template>', 'template')
-  .option('-i, --input', 'input file, one url per line')
   .option('--sep <seperator>', 'seperator for multiple matches', '\n')
   .option('-l, --limit <count>', 'limit query to <count> matches', '0')
   .option('-n, --lineNumber', 'add line numbers to output')
+  .option('-j, --json', 'full results object as JSON')
+  .option('-c, --compact', 'when used with --json, outputs compact format');
 
-// request parameters
-//  .option('-m, --method <method>', 'One of get, post, put (Default: get)')
-//  .option('-d, --data', 'data to pass to request as key:value,...')
-  .option('-j, --json', 'full results object as JSON');
 
 // samples
-program
-  .command('samples [N]')
-  .description('show samples, or run sample N')
-  .action(function(){
-    var samples = require('./samples');
-    cmd = 1;
-
-    samples.action(program);
-  });
+require('./samples').init(program);
 
 // help topic
 require('./help')(program);
@@ -37,9 +26,8 @@ require('./help')(program);
 // parse
 program.parse(process.argv);
 
-
 if (program.args.length < 1) return console.log(program.helpInformation());
-if (cmd) return;
+if (program.done) return;
 
 // run
 var quget = require('../src/quget'),

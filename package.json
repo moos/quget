@@ -27,7 +27,8 @@
     "commander": "^2.3.0",
     "request": "^2.44.0",
     "promptly": "^0.2.0",
-    "markup-js": "^1.5.20"
+    "markup-js": "^1.5.20",
+    "underscore": "latest"
   },
   "devDependencies": {
   },

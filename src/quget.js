@@ -1,12 +1,13 @@
 /*!
- * quget -- simple wget with css selector
+ * quget -- like wget but with css selectors
  *
- * @copyright github.com/moos
+ * @copyright 2016 https://github.com/moos/quget
  * @license MIT
  */
 
 var
   utils = require('./utils'),
+  _ = require('underscore'),
   request = require('request');
 
 
@@ -15,10 +16,9 @@ exports.run = function run(url, selector, options) {
   // make request
   request(url, function (err, response, html) {
     if (err) {
-      console.log(utils.error(err));
+      console.log(utils.error(err), url);
       return;
     }
-
     if (!selector) {
       console.log(html);
       return;
@@ -28,16 +28,44 @@ exports.run = function run(url, selector, options) {
     var cheerio = require('cheerio'),
       Mark = require('markup-js'),
       opt = {selectors: true},
-      selectors = (selector.trim().split(/\s*,\s*/)),
-      selectorStr = selectors.join(',').replace(/@[\w-_]+/g, '').replace(/\|\w+>?\w*/g, ''),
+      reSeperator = /\s*,\s*/,
+      reAttr = /@[\w-_]+/g,
+      reFilter = /\s*\|(?!\=)\s*/,
+      removeFilter = function(sel){
+        return (sel + ' ').slice(0, sel.search(reFilter));
+      },
+      selectors = selector.trim().split(reSeperator),
+      selectorStr = selectors.map(removeFilter).join(',').replace(reAttr, ''),
       coll = [],
-      results, str;
+      $, results, str, output;
 
+    Mark.delimiter = /\s+/;
+
+    // load html & apply selectors
     $ = cheerio.load(html, opt);
     results = $(selectorStr);
+//    console.log(results[0]);
 
-    initMark(Mark, $);
+    // init filter pipes
+    require('./pipes.js')(Mark, {
+      $    : $,
+      chalk: utils.chalk
+    });
 
+    if (options.limit > 0 && results.length >= options.limit) {
+      results.length = options.limit;
+    }
+
+    if (options.json) {
+      if (options.compact) {
+        console.log('%j', toJSON(Array.from(results), true));
+      } else {
+        console.log(toJSON(Array.from(results)));
+      }
+      return;
+    }
+
+    // parse results
     results.each(function (i) {
       // 'this' is the matched node
       this.index = i;
@@ -45,19 +73,12 @@ exports.run = function run(url, selector, options) {
       if (options.template) {
         str = Mark.up(options.template, this);
       } else {
-        var sel = selectors[this.selectorIndex],
-          attr = sel.match(/\@([\w-_]+)/g) || [0],
-          pipes = sel.match(/\|.*$/) || '',
-          tmpl = attr.map(attrize).map(function tokenize(token){
-            return '{{.|'+ token + pipes + '}}';
-          }).join(' ');
-
+        var tmpl = templatize(selectors[this.selectorIndex]);
         if (options.lineNumber) tmpl = '{{index|incr}}. ' + tmpl;
         str = Mark.up(tmpl, this);
       }
 
       coll.push(str);
-      if (options.limit > 0 && 1+i >= options.limit) return false;
     });
 
     output = coll.join(options.sep);
@@ -65,49 +86,34 @@ exports.run = function run(url, selector, options) {
   });
 };
 
-
+// get template token for attribute (@attr), otherwise uses text node
 function attrize(attr){
-  return !attr ? 'text' : 'attr>' + attr.replace('@','');
+  var delim = ' ';  // should match Mark.delimeter
+  return !attr ? 'text' : 'attr' +  delim + attr.replace('@','');
 }
 
+// generate a template for selection, e.g., 'div a@href|pack'
+var templatize = _.memoize(function (sel) {
+  var attr = sel.match(/\@([\w-_]+)/g) || [0],
+    pipes = sel.match(/\|.*$/) || '',
+    tmpl = attr.map(attrize).map(function tokenize(token){
+      return '{{.|'+ token + pipes + '}}';
+    }).join(' ');
 
-function initMark(Mark, $) {
+  return tmpl;
+});
 
-  Mark.pipes.text = function(str){
-    return $(str).text();
-  };
+function toJSON(data, deep){
+  var out = [];
+  data.forEach(function(obj){
+    // clean up
+    delete obj.next;
+    delete obj.prev;
+    delete obj.parent;
 
-  Mark.pipes.html = function(str){
-    return $(str).html(); // TODO get recursive!!
-  };
+    if (obj.children) obj.children = toJSON(obj.children, true);
+    out.push(obj);
+  });
 
-  Mark.pipes.attr = function(str, name){
-    return $(str).attr(name) || '';
-  };
-
-  Mark.pipes.quote = function(str, text){
-    if (text === 'br') text = '\n';
-    return text + str + text;
-  };
-
-  Mark.pipes.before = function(str, text){
-    if (text === 'br') text = '\n';
-    return text + str;
-  };
-
-  Mark.pipes.after = function(str, text){
-    if (text === 'br') text = '\n';
-    return str + text;
-  };
-
-  Mark.pipes.incr = function(str, count){
-    count = count || 1;
-    return Number(str) + count;
-  };
-
-  Mark.pipes.decr = function(str, count){
-    count = count || 1;
-    return Number(str) - count;
-  };
+  return deep ? out : JSON.stringify(out, undefined, 2);
 }
-
