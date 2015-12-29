@@ -1,29 +1,27 @@
-# quget
- 
-Get web snippets from the command-line.
+# quget -  web snippets from the command-line
 
 ## Introduction
-quget brings together the power of [request], [cheerio], and jQuery-like CSS selectors to the command-line.
+quget brings together the power of [request](https://github.com/request/request), [cheerio](https://github.com/cheeriojs/cheerio), and jQuery-like CSS selectors to the command-line.
 
 ```
   quget = request + cheerio + jQuery selectors | markup.js | chalk
 ```
 
-```shell
+```bash
 $ quget http://news.ycombinator.com ".title > a" --limit 3
 Best things and stuff of 2015
 When coding style survives compilation: De-anonymizing programmers from binaries
 Postgres features and tips
 ```
 
-```shell
+```bash
 $ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr|yellow"
 Gold Price Per Ounce$1,075.20$3.90
 Gold Price Per Gram$34.57$0.13
 Gold Price Per Kilo$34,568.46$125.39
 ```
 
-```shell
+```bash
 $ alias def='function _blah(){ quget https://www.bing.com/search?q=define+$@ "#b_results ol:first-child|bold"; };_blah'
 $ def foo
   a term used as a universal substitute for something real, especially when discussing technological ideas and problems
@@ -35,7 +33,7 @@ $ def foo
 
 ## Usage
 
-```shell
+```bash
 
  Usage: quget [command] [options] <url> [selector]
 
@@ -66,22 +64,22 @@ If no `selector` is given, the complete HTML of the page is returned.
 
 ## Attributes
 
-In general quget returns the `text()` of the matched nodes.  To select an attribute, add the [x-ray](https://github.com/lapwinglabs/x-ray)-like `@` to the selector (*but before the pipes!*).
+In general quget returns the `text()` of the matched nodes.  To select an attribute, add the [x-ray](https://github.com/lapwinglabs/x-ray)-like `@` to the selector (*before the pipes!*).
 
 - `selector@<attr-name>` - get an attribute by name, e.g., `selector@href`
 - `selector@text` - get text content of matched nodes recursively (default)
 - `selector@html` - get the innerHTML
 
-Multiple attributes is also supported: `selector@id@class`.
+Multiple attributes are supported: `selector@id@class`.
 
 
 ## Filters / Pipes
 
-quget supports [Markup.js](https://github.com/adammark/Markup.js)-type pipes separated by `|`, for example, `selector|upcase`, `selector|pack`, `selector|pack|tease 7`. For complete list see Markup.js' [biuld-in pipes](https://github.com/adammark/Markup.js#built-in-pipes).
+quget supports [Markup.js](https://github.com/adammark/Markup.js)-type pipes separated by `|`, for example, `selector|upcase`, `selector|pack`, `selector|pack|tease 7`. For complete list see Markup.js' [built-in pipes](https://github.com/adammark/Markup.js#built-in-pipes).
 
 Need some emphasis or color? All [chalk.styles](https://github.com/chalk/chalk#styles) are available as pipes as well: e.g. `selector|red`, `selector|bold|bgBlue`.
 
-Additional pipes are defined in [src/pipes/basic.js]:
+Additional pipes are defined in (src/pipes/basic.js):
 
 - `|after text` - add text after each match
 - `|before text` - add text before each match
@@ -89,7 +87,7 @@ Additional pipes are defined in [src/pipes/basic.js]:
 - `|incr N` - increment the match value by N (default 1)  
 - `|decr N` - decrement the match value by N (default 1)
 - `|regex (foo.*)` - match by regex
-- `|rand` - select a random match
+- `|rand` - select a random match (coming soon)
 
 For complete list, run `quget help pipes`.
 
@@ -98,7 +96,7 @@ For complete list, run `quget help pipes`.
 For other examples, run `quget samples`. (Note: samples are run using Node's `child_process.exec()` which gobbles colors in output streams.  To see the colors, run the command directly from the shell.)
 
 Run samples interactive:
-`
+```bash
 $ quget samples
 Choose a sample to run:
 1. Hacker News titles
@@ -111,10 +109,10 @@ Choose a sample to run:
 8. Custom template
 9. Jeopardy!
 >
-`
+```
 
 Run a sample:
-`
+```bash
 $ quget samples 1
 Running:
 quget http://news.ycombinator.com ".title > a" -l 7 -n
@@ -127,16 +125,16 @@ quget http://news.ycombinator.com ".title > a" -l 7 -n
 5. Starters and Maintainers
 6. Postgres features and tips
 7. When coding style survives compilation: De-anonymizing programmers from binaries
-`
+```
 
 Basic:
-`
+```bash
 $ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" -limit 1
 Gold Price Per Ounce$1,075.20$3.90
-`
+```
 
 With JSON output:
-`
+```bash
 $ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" -limit 1 --json
 [
   {
@@ -187,41 +185,41 @@ $ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" 
     "selectorIndex": 0
   }
 ]
-`
+```
 
 With JSON compact:
-`
+```bash
 $ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" -limit 1 --json --compact
 [{"type":"tag","name":"tr","attribs":{},"children":[{"type":"tag","name":"td","attribs":{"class":"_dmh"},"children":[{"data"
 :"Gold Price Per Ounce","type":"text"}]},{"type":"tag","name":"td","attribs":{"class":"_dmh"},"children":[{"data":"$1,075.20
 ","type":"text"}]},{"type":"tag","name":"td","attribs":{"class":"_dmh"},"children":[{"data":"$3.90","type":"text"}]}],"selec
 torIndex":0}]
-`
+```
 
 With line numbers:
-`
+```bash
 $ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" -n
 1. Gold Price Per Ounce$1,075.20$3.90
 2. Gold Price Per Gram$34.57$0.13
 3. Gold Price Per Kilo$34,568.46$125.39
-`
+```
 
 Custom template:
-`
+```bash
 $ quget http://www.google.com/search?q=what+is+the+what+is+the+price+of+gold "td._dmh < tr|yellow"  -T "#{{index|incr}} {{ty
 pe|upcase}} {{name}} has {{children.length}} children: {{.|text}}"
 #1 TAG tr has 3 children: Gold Price Per Ounce$1,075.20$3.90
 #2 TAG tr has 3 children: Gold Price Per Gram$34.57$0.13
 #3 TAG tr has 3 children: Gold Price Per Kilo$34,568.46$125.39
-`
+```
 See [Markup.js](https://github.com/adammark/Markup.js) for template help.
 
 ## Package note
-This modules uses my own [fork of css-select](https://github.com/moos/css-select) which supplies the matched selector index in the list of matched elements.  Since css-select is a dependency of (cheerio), I had to `npm shrinkwrap` it to load my fork.  Any updates to cheerio will require manually updating the shrinkwrap json file.  Hopefully with upcoming npm 3's flat dependency tree, this shebang can be eliminated.
-`
+quget relies on a [fork of css-select](https://github.com/moos/css-select) which supplies the matched selector index in the list of matched elements.  Since css-select is a dependency of cheerio, it ues `npm shrinkwrap` to load the fork.  Any updates to cheerio will require manually updating the shrinkwrap json file.  Hopefully with upcoming npm 3's flat dependency tree, this shebang can be eliminated.
+```bash
 $ def shebang
 informala matter, operation, or set of circumstances: "the Mafia boss who's running the whole shebang"N. AMER. archaica rough hut or shelter.
-`
+```
 
 ## License
 
