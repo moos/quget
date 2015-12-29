@@ -48,7 +48,7 @@ function pipes_help() {
   });
 
   Mark.pipes = {};
-  basic = require('../src/pipes/basic.js')(Mark),
+  basic = require('../src/pipes/basic.js')(Mark);
 
   console.log(utils.info('Basic filters:'));
   console.log(Object.keys(Mark.pipes).sort().map(function(pipe){

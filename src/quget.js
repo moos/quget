@@ -1,5 +1,5 @@
 /*!
- * quget -- like wget but with css selectors
+ * quget -- Get web snippets from the command-line.
  *
  * @copyright 2016 https://github.com/moos/quget
  * @license MIT
@@ -27,7 +27,6 @@ exports.run = function run(url, selector, options) {
     // parse selector(s)
     var cheerio = require('cheerio'),
       Mark = require('markup-js'),
-      opt = {selectors: true},
       reSeperator = /\s*,\s*/,
       reAttr = /@[\w-_]+/g,
       reFilter = /\s*\|(?!\=)\s*/,
@@ -42,9 +41,9 @@ exports.run = function run(url, selector, options) {
     Mark.delimiter = /\s+/;
 
     // load html & apply selectors
-    $ = cheerio.load(html, opt);
+    $ = cheerio.load(html);
     results = $(selectorStr);
-//    console.log(results[0]);
+//    console.log(selectorStr, selectors,results);
 
     // init filter pipes
     require('./pipes.js')(Mark, {
@@ -88,7 +87,7 @@ exports.run = function run(url, selector, options) {
 
 // get template token for attribute (@attr), otherwise uses text node
 function attrize(attr){
-  var delim = ' ';  // should match Mark.delimeter
+  var delim = ' ';  // should match Mark.delimiter
   return !attr ? 'text' : 'attr' +  delim + attr.replace('@','');
 }
 

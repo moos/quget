@@ -44,6 +44,13 @@ module.exports = function(Mark) {
   Mark.pipes.regex.help = 'Regular expression match: |regex foo(.*?)bar';
 
 
+  // TODO
+  Mark.pipes.rand = function(str){
+    return str;
+  };
+  Mark.pipes.rand.help = 'Coming soon...';
+
+
   function sanitize(text) {
     return text
       .replace(/\\t/g, '\t')

@@ -1,0 +1,34 @@
+{
+  "name": "quget",
+  "version": "0.2.0-rc1",
+  "dependencies": {
+    "cheerio": {
+      "version": "0.19.0",
+      "from": "cheerio@>=0.19.0 <0.20.0",
+      "resolved": "https://registry.npmjs.org/cheerio/-/cheerio-0.19.0.tgz",
+      "dependencies": {
+        "css-select": {
+          "version" : "1.2.0+moos",
+          "from"    : "moos/css-select#v1.2.0+moos",
+          "resolved": "git://github.com/moos/css-select.git#2c8926f3a996be230ca9bb4e5304e8fa0e8bbd73"
+        },
+        "entities": {
+          "version" : "~1.1.1",
+          "from": "entities@>=1.1.1 <1.2.0"
+        },
+        "htmlparser2": {
+          "version": "3.8.3",
+          "from"   : "htmlparser2@>=3.8.1 <3.9.0"
+        },
+        "dom-serializer": {
+          "version": "0.1.0",
+          "from"   : "dom-serializer@>=0.1.0 <0.2.0"
+        },
+        "lodash": {
+          "version": "3.10.1",
+          "from": "lodash@>=3.2.0 <4.0.0"
+        }
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 {
   "name": "quget",
-  "version": "0.2.0",
-  "description": "A query selector-based wget CLI for node.js, like jQuery's load()",
+  "version": "0.2.0-rc1",
+  "description": "Get web snippets from the command-line.",
   "main": "src/quget.js",
   "bin": "bin/cli.js",
   "repository": {
@@ -13,7 +13,8 @@
     "wget",
     "cheerio",
     "request",
-    "scrapper"
+    "scrapper",
+    "selector"
   ],
   "author": "Moos",
   "license": "MIT",

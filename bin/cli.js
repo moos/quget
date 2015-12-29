@@ -32,7 +32,6 @@ if (program.done) return;
 // run
 var quget = require('../src/quget'),
   url = program.args[0],
-  selector = program.args[1] || '',
-  result;
+  selector = program.args[1] || '';
 
 quget.run(url, selector, program);

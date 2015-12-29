@@ -11,7 +11,7 @@ exports.init = function(program) {
       program.done = true;
       action(program);
     });
-}
+};
 
 var samples = [{
     label: 'Hacker News titles',
@@ -64,7 +64,7 @@ function action(program) {
 
   prompt = '\nChoose a sample to run:\n' + _(samples).pluck('label').join('\n') + '\n\n> ';
   promptly.choose(prompt, _.range(1, samples.length + 1), runSample);
-};
+}
 
 
 var runSample = exports.runSample = function runSample(err, choice, silent, callback){
@@ -74,6 +74,7 @@ var runSample = exports.runSample = function runSample(err, choice, silent, call
     cmd = 'node ./bin/' + path.basename(process.argv[1]) + ' ' + sample_cmd;
 
   !silent && console.log(utils.info('Running:\n' + cmd + '\n'), utils.chalk.bold.magenta(_(samples).pluck('label')[choice - 1]));
+
   exec(cmd, {} ,callback || function(err, stdout, stderr){
     err && console.log(err);
     console.log(stderr);
