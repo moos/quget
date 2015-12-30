@@ -1,2 +1,2 @@
 * text=auto
-bin/cli.js text eol=lf
+cli.js text eol=lf
