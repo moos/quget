@@ -1,5 +1,8 @@
 # quget -  web snippets from the command-line
 
+[![NPM version](https://img.shields.io/npm/v/quget.svg)](https://www.npmjs.com/package/quget)
+[![Build Status](https://img.shields.io/travis/moos/quget/master.svg)](https://travis-ci.org/moos/quget)
+
 ## Introduction
 quget brings together the power of [request](https://github.com/request/request), [cheerio](https://github.com/cheeriojs/cheerio), and jQuery-like CSS selectors to the command-line.
 
@@ -49,7 +52,7 @@ phanan / koel
 
    -h, --help                 output usage information
    -V, --version              output the version number
-   -T, --template <template>  template
+   -T, --template <template>  template: "node: {{name}}, text {{.|text}}"
    --sep <seperator>          seperator for multiple matches
    -l, --limit <count>        limit results to <count> matches
    -n, --lineNumber           add line numbers to output

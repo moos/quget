@@ -1,6 +1,6 @@
 {
   "name": "quget",
-  "version": "0.2.0-rc4",
+  "version": "0.2.0-rc5",
   "dependencies": {
     "chalk"    : {
       "version": "1.1.1",

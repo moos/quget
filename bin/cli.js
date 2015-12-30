@@ -9,7 +9,7 @@ program
   .version(version)
   .usage('[command] [options] <url> [selector]\n'
     + '\n  Example: quget http://news.ycombinator.com ".title > a|bold|red" -l 5')
-  .option('-T, --template <template>', 'template')
+  .option('-T, --template <template>', 'template "node: {{name}}, text {{.|text}}"')
   .option('--sep <seperator>', 'seperator for multiple matches', '\n')
   .option('-l, --limit <count>', 'limit query to <count> matches', '0')
   .option('-n, --lineNumber', 'add line numbers to output')

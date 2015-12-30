@@ -6,21 +6,21 @@ module.exports = function(Mark) {
     text = sanitize(text);
     return str + text;
   };
-  Mark.pipes.after.help = 'Insert text after (use \\\\t & \\\\n for tab and newline): |after Done.\\\\n';
+  Mark.pipes.after.help = 'Insert text after (use \\t & \\n for tab and newline): |after Done.\\n';
 
 
   Mark.pipes.before = function(str, text){
     text = sanitize(text);
     return text + str;
   };
-  Mark.pipes.before.help = 'Insert text before: |before Title\\\\t';
+  Mark.pipes.before.help = 'Insert text before: |before Title\\t';
 
 
   Mark.pipes.quote = function(str, text){
     if (text === 'br') text = '\n';
     return text + str + text;
   };
-  Mark.pipes.quote.help = 'Surround with text: |quote \\\\n';
+  Mark.pipes.quote.help = 'Surround with text: |quote \\n';
 
 
   Mark.pipes.incr = function(str, count){
