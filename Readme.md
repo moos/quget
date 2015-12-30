@@ -58,6 +58,7 @@ phanan / koel
    -n, --lineNumber           add line numbers to output
    -j, --json                 full results object as JSON
    -c, --compact              when used with --json, outputs compact format
+   - , --stdin                read <url>(s) from STDIN, one per line
 ```
 
 ## Selectors
@@ -94,6 +95,17 @@ Additional pipes are defined in (src/pipes/basic.js):
 - `|rand` - select a random match (coming soon)
 
 For complete list, run `quget help pipes`.
+
+## Shell pipe
+
+quget can be forced to read from STDIN, either interactively or in a shell pipe, by providing the single dash option `-`.  In this mode, each line of input is read as a url and executed in order.  Each line may also contain it's own `selector`.  If none is given, the `selector` from the CLI is used.
+  
+```bash
+$ quget http://news.ycombinator.com ".title > a@href" -l 3 | quget - "title|pack"
+Page not found | Docker Blog
+Permission to Fail - Michelle Wetzler of Keen IO
+The Amazon Whisperer
+```
 
 ## Examples
 
