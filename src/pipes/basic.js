@@ -38,17 +38,17 @@ module.exports = function(Mark) {
 
 
   Mark.pipes.regex = function(str, regex){
-    regex = RegExp(regex);
+    regex = new RegExp(regex);
     return (str.match(regex) || [])[1];
   };
   Mark.pipes.regex.help = 'Regular expression match: |regex foo(.*?)bar';
 
 
-  // TODO
+  // rand is handled at the results level
   Mark.pipes.rand = function(str){
     return str;
   };
-  Mark.pipes.rand.help = 'Coming soon...';
+  Mark.pipes.rand.help = 'Select from the matches at random (rand is global, it\' applied to all the selectors)';
 
 
   function sanitize(text) {

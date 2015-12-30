@@ -1,6 +1,6 @@
 {
   "name": "quget",
-  "version": "0.2.0-rc5",
+  "version": "0.2.0-rc6",
   "description": "Get web snippets from the command-line.",
   "main": "src/quget.js",
   "bin": "bin/cli.js",
@@ -29,7 +29,8 @@
     "request": "^2.44.0",
     "promptly": "^0.2.0",
     "markup-js": "^1.5.20",
-    "underscore": "latest"
+    "underscore": "latest",
+    "get-stdin": "^5.0.0"
   },
   "devDependencies": {
   },

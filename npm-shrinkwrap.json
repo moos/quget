@@ -1,6 +1,6 @@
 {
   "name": "quget",
-  "version": "0.2.0-rc5",
+  "version": "0.2.0-rc6",
   "dependencies": {
     "chalk"    : {
       "version": "1.1.1",
@@ -53,6 +53,10 @@
     "underscore": {
       "version": "1.8.3",
       "from": "underscore@latest"
+    },
+    "get-stdin": {
+      "version": "5.0.1",
+      "from": "get-stdin@>5.0.0 <6.0.0"
     }
   }
 }

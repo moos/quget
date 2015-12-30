@@ -2,21 +2,21 @@
 
 module.exports = function(Mark, $) {
 
-  Mark.pipes.text = function(str){
-    return $(str).text();
+  Mark.pipes.text = function(matches){
+    return $(matches).text();
   };
 
-  // NOTE: only return first match!
-  Mark.pipes.html = function(str){
-    return $(str).html();
+  // NOTE: only returns first match!
+  Mark.pipes.html = function(matches){
+    return $(matches).html();
   };
 
-  Mark.pipes.attr = function(str, name){
+  Mark.pipes.attr = function(matches, name){
     // handle special case:
-    if (name === 'html') return Mark.pipes.html(str);
-    if (name === 'text') return Mark.pipes.text(str);
+    if (name === 'html') return Mark.pipes.html(matches);
+    if (name === 'text') return Mark.pipes.text(matches);
 
-    return $(str).attr(name) || '';
+    return $(matches).attr(name) || '';
   };
 
 };
