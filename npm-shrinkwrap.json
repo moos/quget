@@ -1,6 +1,6 @@
 {
   "name": "quget",
-  "version": "0.2.0-rc2",
+  "version": "0.2.0-rc4",
   "dependencies": {
     "chalk"    : {
       "version": "1.1.1",
@@ -14,7 +14,7 @@
         "css-select"    : {
           "version" : "1.2.0+moos",
           "from"    : "moos/css-select#v1.2.0+moos",
-          "resolved": "git://github.com/moos/css-select.git#2c8926f3a996be230ca9bb4e5304e8fa0e8bbd73"
+          "resolved": "https://github.com/moos/css-select/tarball/v1.2.0+moos"
         },
         "entities"      : {
           "version": "~1.1.1",
@@ -33,6 +33,10 @@
           "from"   : "lodash@>=3.2.0 <4.0.0"
         }
       }
+    },
+    "commander": {
+      "version": "2.9.0",
+      "from"   : "commander@>=2.3.0 <3.0.0"
     },
     "markup-js": {
       "version": "1.5.21",

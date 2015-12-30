@@ -3,9 +3,6 @@
 ## Introduction
 quget brings together the power of [request](https://github.com/request/request), [cheerio](https://github.com/cheeriojs/cheerio), and jQuery-like CSS selectors to the command-line.
 
-```
-  quget = request + cheerio + jQuery selectors | markup.js | chalk
-```
 
 ```bash
 $ quget http://news.ycombinator.com ".title > a" --limit 3
@@ -21,10 +18,14 @@ Gold Price Per Gram$34.57$0.13
 Gold Price Per Kilo$34,568.46$125.39
 ```
 
+
 ```bash
-$ alias def='function _blah(){ quget https://www.bing.com/search?q=define+$@ "#b_results ol:first-child|bold"; };_blah'
-$ def foo
-  a term used as a universal substitute for something real, especially when discussing technological ideas and problems
+$ quget https://github.com/trending?since=monthly ".repo-list-name|pack" --limit 5
+apple / swift
+FreeCodeCamp / FreeCodeCamp
+MaximAbramchuck / awesome-interviews
+oneuijs / You-Dont-Need-jQuery
+phanan / koel
 ```
 
 
@@ -95,7 +96,7 @@ For complete list, run `quget help pipes`.
 
 For other examples, run `quget samples`. (Note: samples are run using Node's `child_process.exec()` which gobbles colors in output streams.  To see the colors, run the command directly from the shell.)
 
-Run samples interactive:
+### Run samples interactively
 ```bash
 $ quget samples
 Choose a sample to run:
@@ -111,7 +112,7 @@ Choose a sample to run:
 >
 ```
 
-Run a sample:
+### Run a sample
 ```bash
 $ quget samples 1
 Running:
@@ -127,13 +128,13 @@ quget http://news.ycombinator.com ".title > a" -l 7 -n
 7. When coding style survives compilation: De-anonymizing programmers from binaries
 ```
 
-Basic:
+### Simple
 ```bash
 $ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" -limit 1
 Gold Price Per Ounce$1,075.20$3.90
 ```
 
-With JSON output:
+### With JSON output
 ```bash
 $ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" -limit 1 --json
 [
@@ -187,7 +188,7 @@ $ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" 
 ]
 ```
 
-With JSON compact:
+### With JSON compact
 ```bash
 $ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" -limit 1 --json --compact
 [{"type":"tag","name":"tr","attribs":{},"children":[{"type":"tag","name":"td","attribs":{"class":"_dmh"},"children":[{"data"
@@ -196,7 +197,7 @@ $ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" 
 torIndex":0}]
 ```
 
-With line numbers:
+### With line numbers
 ```bash
 $ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" -n
 1. Gold Price Per Ounce$1,075.20$3.90
@@ -204,7 +205,7 @@ $ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" 
 3. Gold Price Per Kilo$34,568.46$125.39
 ```
 
-Custom template:
+### Custom template
 ```bash
 $ quget http://www.google.com/search?q=what+is+the+what+is+the+price+of+gold "td._dmh < tr|yellow"  -T "#{{index|incr}} {{ty
 pe|upcase}} {{name}} has {{children.length}} children: {{.|text}}"
@@ -213,6 +214,13 @@ pe|upcase}} {{name}} has {{children.length}} children: {{.|text}}"
 #3 TAG tr has 3 children: Gold Price Per Kilo$34,568.46$125.39
 ```
 See [Markup.js](https://github.com/adammark/Markup.js) for template help.
+
+### Define an alias
+```bash
+$ alias def='function _blah(){ quget https://www.bing.com/search?q=define+$@ "#b_results ol:first-child|bold"; };_blah'
+$ def foo
+  a term used as a universal substitute for something real, especially when discussing technological ideas and problems
+```
 
 ## Package note
 quget relies on a [fork of css-select](https://github.com/moos/css-select) which supplies the matched selector index in the list of matched elements.  Since css-select is a dependency of cheerio, it ues `npm shrinkwrap` to load the fork.  Any updates to cheerio will require manually updating the shrinkwrap json file.  Hopefully with upcoming npm 3's flat dependency tree, this shebang can be eliminated.
