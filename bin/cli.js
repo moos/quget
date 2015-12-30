@@ -16,7 +16,6 @@ program
   .option('-j, --json', 'full results object as JSON')
   .option('-c, --compact', 'when used with --json, outputs compact format');
 
-
 // samples
 require('./samples').init(program);
 
