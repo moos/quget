@@ -15,7 +15,7 @@ Postgres features and tips
 ```
 
 ```bash
-$ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr|yellow"
+$ quget http://www.google.com/search?q=the+price+of+gold "td._dmh < tr|yellow"
 Gold Price Per Ounce$1,075.20$3.90
 Gold Price Per Gram$34.57$0.13
 Gold Price Per Kilo$34,568.46$125.39
@@ -39,26 +39,27 @@ phanan / koel
 
 ```bash
 
- Usage: quget [command] [options] <url> [selector]
+  Usage: quget [command] [options] <url> [selector] | -
 
- Example: quget http://news.ycombinator.com ".title > a|bold|red" -l 5
+  Example: quget http://news.ycombinator.com ".title > a|bold|red" -l 5
 
- Commands:
+  Commands:
 
-   samples [N]  show samples, or run sample N
-   help [what]  get extra help with: pipes, selector
+    samples [N]  show samples, or run sample N
+    help [what]  get extra help with: pipes, selector
 
- Options:
+  Options:
 
-   -h, --help                 output usage information
-   -V, --version              output the version number
-   -T, --template <template>  template: "node: {{name}}, text {{.|text}}"
-   --sep <seperator>          seperator for multiple matches
-   -l, --limit <count>        limit results to <count> matches
-   -n, --lineNumber           add line numbers to output
-   -j, --json                 full results object as JSON
-   -c, --compact              when used with --json, outputs compact format
-   - , --stdin                read <url>(s) from STDIN, one per line
+    -h, --help                 output usage information
+    -V, --version              output the version number
+    -T, --template <template>  template "node: {{name}}, text {{.|text}}"
+    --sep <seperator>          seperator for multiple matches
+    -l, --limit <count>        limit query to <count> matches (-count from bottom)
+    -r, --rand                 select randomly from matched set (can be combined with --limit)
+    -n, --lineNumber           add line numbers to output
+    -j, --json                 full results object as JSON
+    -c, --compact              when used with --json, outputs compact format
+    - , --stdin                read <url> from STDIN
 ```
 
 ## Selectors
@@ -122,8 +123,9 @@ Choose a sample to run:
 5. Markup filters
 6. Cheerio selectors
 7. Beijing Air Twitter feed
-8. Custom template
-9. Jeopardy!
+8. Custom template 1
+9. Custom template 2
+10. Jeopardy!
 >
 ```
 
@@ -145,13 +147,13 @@ quget http://news.ycombinator.com ".title > a" -l 7 -n
 
 ### Simple
 ```bash
-$ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" -limit 1
+$ quget http://www.google.com/search?q=the+price+of+gold "td._dmh < tr" --limit 1
 Gold Price Per Ounce$1,075.20$3.90
 ```
 
 ### With JSON output
 ```bash
-$ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" -limit 1 --json
+$ quget http://www.google.com/search?q=the+price+of+gold "td._dmh < tr" --limit 1 --json
 [
   {
     "type": "tag",
@@ -205,7 +207,7 @@ $ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" 
 
 ### With JSON compact
 ```bash
-$ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" -limit 1 --json --compact
+$ quget http://www.google.com/search?q=the+price+of+gold "td._dmh < tr" --limit 1 --json --compact
 [{"type":"tag","name":"tr","attribs":{},"children":[{"type":"tag","name":"td","attribs":{"class":"_dmh"},"children":[{"data"
 :"Gold Price Per Ounce","type":"text"}]},{"type":"tag","name":"td","attribs":{"class":"_dmh"},"children":[{"data":"$1,075.20
 ","type":"text"}]},{"type":"tag","name":"td","attribs":{"class":"_dmh"},"children":[{"data":"$3.90","type":"text"}]}],"selec
@@ -214,7 +216,7 @@ torIndex":0}]
 
 ### With line numbers
 ```bash
-$ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" -n
+$ quget http://www.google.com/search?q=the+price+of+gold "td._dmh < tr" -n
 1. Gold Price Per Ounce$1,075.20$3.90
 2. Gold Price Per Gram$34.57$0.13
 3. Gold Price Per Kilo$34,568.46$125.39
@@ -222,7 +224,7 @@ $ quget http://www.google.com/search?q=what+is+the+price+of+gold "td._dmh < tr" 
 
 ### Custom template
 ```bash
-$ quget http://www.google.com/search?q=what+is+the+what+is+the+price+of+gold "td._dmh < tr|yellow"  -T "#{{index|incr}} {{ty
+$ quget http://www.google.com/search?q=the+price+of+gold "td._dmh < tr|yellow"  -T "#{{index|incr}} {{ty
 pe|upcase}} {{name}} has {{children.length}} children: {{.|text}}"
 #1 TAG tr has 3 children: Gold Price Per Ounce$1,075.20$3.90
 #2 TAG tr has 3 children: Gold Price Per Gram$34.57$0.13

@@ -18,6 +18,7 @@ module.exports = function(Mark) {
 
   Mark.pipes.quote = function(str, text){
     if (text === 'br') text = '\n';
+    text = sanitize(text);
     return text + str + text;
   };
   Mark.pipes.quote.help = 'Surround with text: |quote \\n';
@@ -44,13 +45,7 @@ module.exports = function(Mark) {
   Mark.pipes.regex.help = 'Regular expression match: |regex foo(.*?)bar';
 
 
-  // rand is handled at the results level
-  Mark.pipes.rand = function(str){
-    return str;
-  };
-  Mark.pipes.rand.help = 'Select from the matches at random (rand is global, it\' applied to all the selectors)';
-
-
+  // helper
   function sanitize(text) {
     return text
       .replace(/\\t/g, '\t')

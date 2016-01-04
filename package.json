@@ -30,7 +30,7 @@
     "promptly": "^0.2.0",
     "markup-js": "^1.5.20",
     "underscore": "latest",
-    "get-stdin": "^5.0.0"
+    "get-stdin": "^5.0.1"
   },
   "devDependencies": {
   },
