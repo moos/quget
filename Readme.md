@@ -60,6 +60,7 @@ phanan / koel
     -j, --json                 full results object as JSON
     -c, --compact              when used with --json, outputs compact format
     - , --stdin                read <url> from STDIN
+    
 ```
 
 ## Selectors
@@ -81,7 +82,7 @@ Multiple attributes are supported: `selector@id@class`.
 
 ## Filters / Pipes
 
-quget supports [Markup.js](https://github.com/adammark/Markup.js)-type pipes separated by `|`, for example, `selector|upcase`, `selector|pack`, `selector|pack|tease 7`. For complete list see Markup.js' [built-in pipes](https://github.com/adammark/Markup.js#built-in-pipes).
+quget supports [Markup.js](https://github.com/adammark/Markup.js)-type pipes separated by `|`, for example, `selector|upcase`, `selector|pack|tease 7`. For complete list see Markup.js' [built-in pipes](https://github.com/adammark/Markup.js#built-in-pipes).
 
 Need some emphasis or color? All [chalk.styles](https://github.com/chalk/chalk#styles) are available as pipes as well: e.g. `selector|red`, `selector|bold|bgBlue`.
 
@@ -93,9 +94,8 @@ Additional pipes are defined in (src/pipes/basic.js):
 - `|incr N` - increment the match value by N (default 1)  
 - `|decr N` - decrement the match value by N (default 1)
 - `|regex (foo.*)` - match by regex
-- `|rand` - select a random match (coming soon)
 
-For complete list, run `quget help pipes`.
+Use `\n` to add a new line, e.g. `selector|after \n\n`. For complete list, run `quget help pipes`.
 
 ## Shell pipe
 
@@ -241,10 +241,6 @@ $ def foo
 
 ## Package note
 quget relies on a [fork of css-select](https://github.com/moos/css-select) which supplies the matched selector index in the list of matched elements.  Since css-select is a dependency of cheerio, it ues `npm shrinkwrap` to load the fork.  Any updates to cheerio will require manually updating the shrinkwrap json file.  Hopefully with upcoming npm 3's flat dependency tree, this shebang can be eliminated.
-```bash
-$ def shebang
-informala matter, operation, or set of circumstances: "the Mafia boss who's running the whole shebang"N. AMER. archaica rough hut or shelter.
-```
 
 ## License
 
