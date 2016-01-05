@@ -1,6 +1,6 @@
 {
   "name": "quget",
-  "version": "0.2.0-rc7",
+  "version": "0.2.0",
   "description": "Get web snippets from the command-line.",
   "main": "src/quget.js",
   "bin": "bin/cli.js",
@@ -26,15 +26,15 @@
     "chalk": "^1.0.0",
     "cheerio": "^0.19.0",
     "commander": "^2.3.0",
-    "request": "^2.44.0",
-    "promptly": "^0.2.0",
+    "get-stdin": "^5.0.1",
+    "jsonic": "^0.2.2",
     "markup-js": "^1.5.20",
-    "underscore": "latest",
-    "get-stdin": "^5.0.1"
+    "promptly": "^0.2.0",
+    "request": "^2.44.0",
+    "underscore": "latest"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node bin/cli.js samples 1"
   }
 }

@@ -70,8 +70,15 @@ function action(program) {
 
 
 var runSample = exports.runSample = function runSample(err, choice, silent, callback){
-  var sample_cmd = _(samples).pluck('cmd')[ choice - 1],
-    exec = require('child_process').exec,
+  --choice;
+  var sample_cmd = _(samples).pluck('cmd')[choice],
+    label = _(samples).pluck('label')[choice];
+
+  runCmd(sample_cmd, label, silent, callback);
+};
+
+var runCmd = exports.runCmd = function runCmd(sample_cmd, label, silent, callback){
+  var exec = require('child_process').exec,
     path = require('path'),
     cmd = ['node',
         process.argv[1],
@@ -79,7 +86,7 @@ var runSample = exports.runSample = function runSample(err, choice, silent, call
         process.argv.slice(4).join(' ')
     ].join(' ');
 
-  !silent && console.log('Running: ', utils.info(cmd + '\n'), utils.chalk.bold.magenta(_(samples).pluck('label')[choice - 1]));
+  !silent && console.log('Running: ', utils.info(cmd + '\n'), utils.chalk.bold.magenta(label));
 
   exec(cmd, {} ,callback || function(err, stdout, stderr){
     err && console.log(err);

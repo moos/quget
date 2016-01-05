@@ -46,21 +46,22 @@ phanan / koel
   Commands:
 
     samples [N]  show samples, or run sample N
-    help [what]  get extra help with: pipes, selector
-
+    help [what]  get extra help with: pipes, selector, request-options
+    
   Options:
 
-    -h, --help                 output usage information
-    -V, --version              output the version number
-    -T, --template <template>  template "node: {{name}}, text {{.|text}}"
-    --sep <seperator>          seperator for multiple matches
-    -l, --limit <count>        limit query to <count> matches (-count from bottom)
-    -r, --rand                 select randomly from matched set (can be combined with --limit)
-    -n, --lineNumber           add line numbers to output
-    -j, --json                 full results object as JSON
-    -c, --compact              when used with --json, outputs compact format
-    - , --stdin                read <url> from STDIN
-    
+    -h, --help                           output usage information                                              
+    -V, --version                        output the version number                                             
+    -T, --template <template>            template "node: {{name}}, text {{.|text}}"                            
+    -l, --limit <count>                  limit query to count matches (-count from bottom)                     
+    -r, --rand                           select randomly from matched set (can be combined with --limit)       
+    -j, --json                           full results object as JSON                                           
+    -c, --compact                        when used with --json, outputs compact format                         
+    -n, --line-umber                     add line numbers to output                                            
+    - , --stdin                          read <url>(s) from STDIN                                              
+    --sep <seperator>                    seperator for multiple matches                                        
+    --request-options <request-options>  options for "request" as relaxed JSON, "{foo: bar}"                   
+
 ```
 
 ## Selectors
@@ -94,12 +95,13 @@ Additional pipes are defined in (src/pipes/basic.js):
 - `|incr N` - increment the match value by N (default 1)  
 - `|decr N` - decrement the match value by N (default 1)
 - `|regex (foo.*)` - match by regex
+- `|colorize` - apply random chalk style to every line
 
 Use `\n` to add a new line, e.g. `selector|after \n\n`. For complete list, run `quget help pipes`.
 
 ## Shell pipe
 
-quget can be forced to read from STDIN, either interactively or in a shell pipe, by providing the single dash option `-`.  In this mode, each line of input is read as a url and executed in order.  Each line may also contain it's own `selector`.  If none is given, the `selector` from the CLI is used.
+quget can be forced to read from STDIN, either interactively or in a shell pipe, by providing the single dash option `-`.  In this mode, each line of input is read as a url and executed in order.  Each line may also contain its own `selector`.  If none is given, the `selector` from the CLI is used.
   
 ```bash
 $ quget http://news.ycombinator.com ".title > a@href" -l 3 | quget - "title|pack"
@@ -222,6 +224,14 @@ $ quget http://www.google.com/search?q=the+price+of+gold "td._dmh < tr" -n
 3. Gold Price Per Kilo$34,568.46$125.39
 ```
 
+### Select at random
+```bash
+$ quget "https://www.reddit.com/r/oneliners/top/?sort=top&t=year" "a.title|colorize" --limit 3 --rand
+Ever since I've installed Adblock, all the single girls in my area seem to have lost interest
+My poor knowledge of Greek mythology has always been my Achilles' elbow.
+Jokes about socialism aren't funny unless you share them with everyone.
+```
+
 ### Custom template
 ```bash
 $ quget http://www.google.com/search?q=the+price+of+gold "td._dmh < tr|yellow"  -T "#{{index|incr}} {{ty
@@ -231,6 +241,17 @@ pe|upcase}} {{name}} has {{children.length}} children: {{.|text}}"
 #3 TAG tr has 3 children: Gold Price Per Kilo$34,568.46$125.39
 ```
 See [Markup.js](https://github.com/adammark/Markup.js) for template help.
+
+### Custom HTTP headers
+Any options for [request](https://github.com/request/request#requestoptions-callback) can be entered in a *relaxed* [jsonic](https://github.com/rjrodger/jsonic) format using `--request-options`.
+ 
+```bash
+$ quget https://api.github.com/users/moos
+Request forbidden by administrative rules. Please make sure your request has a User-Agent header (http://developer.github.com/v3/#user-agent-required). Check https://developer.github.com for other possible causes.
+
+$ quget https://api.github.com/users/moos  --request-options "headers:{\"User-Agent\":foo}"
+{"login":"moos","id":233047,"avatar_url":"https://avatars.githubusercontent.com/u/233047?v=3", [snip]
+```
 
 ### Define an alias
 ```bash

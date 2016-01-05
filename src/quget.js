@@ -6,18 +6,27 @@
  */
 
 var
-  utils = require('./utils'),
   _ = require('underscore'),
-  request = require('request');
-
+  request = require('request'),
+  utils = require('./utils');
 
 exports.run = function run(url, selector, options) {
+  var req = {
+    url: url
+  };
+
+  // add request options, if any
+  if (options.requestOptions) {
+    var jsonic = require('jsonic');
+    _.extend(req, jsonic(options.requestOptions));
+  }
+
   return new Promise(function (resolve, reject) {
 
     // make request
-    request(url, function (err, response, html) {
+    request(req, function (err, response, html) {
       if (err) {
-        console.log(utils.error(err), url);
+        console.log(utils.error(err));
         return reject(err);
       }
       if (!selector) {
@@ -56,9 +65,7 @@ exports.run = function run(url, selector, options) {
       if (options.limit && results.length > options.limit) {
         count = options.limit;
       }
-      //console.log('counnt', count, results.length, options.limit)
-
-      //results.length = 3;
+      //console.log('count', count, results.length, options.limit)
 
       // rand and limit are applied to selector groups
       if (options.rand || options.limit) {
@@ -128,9 +135,6 @@ exports.run = function run(url, selector, options) {
           tmpl = options.template || templatize(selectors[item.selectorIndex]),
           $n = '$' + item.selectorIndex,
           str;
-
-        //console.log(index, $n)
-
 
         // useful for {{if $0}}...{{/if}} predicates. $n is the n-th matched selector (0-based)
         item[ $n ] = item;

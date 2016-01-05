@@ -3,9 +3,17 @@
 module.exports = function(Mark, chalk) {
   //console.log(chalk.styles)
 
+  var styles = Object.keys(chalk.styles);
+
   // inherit chalk.styles as pipes
-  Object.keys(chalk.styles).forEach(function(style){
+  styles.forEach(function(style){
     Mark.pipes[ style ] = chalk[ style ];
   });
+
+
+  Mark.pipes.colorize = function(str){
+    var style = require('underscore')(styles).sample();
+    return Mark.pipes[ style ](str);
+  };
 
 };

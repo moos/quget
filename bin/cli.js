@@ -10,13 +10,15 @@ program
   .usage('[command] [options] <url> [selector] | -\n'
     + '\n  Example: quget http://news.ycombinator.com ".title > a|bold|red" -l 5')
   .option('-T, --template <template>', 'template "node: {{name}}, text {{.|text}}"')
-  .option('--sep <seperator>', 'seperator for multiple matches', sanitize, '\n')
-  .option('-l, --limit <count>', 'limit query to <count> matches (-count from bottom)', parseInt, 0)
+  .option('-l, --limit <count>', 'limit query to count matches (-count from bottom)', parseInt, 0)
   .option('-r, --rand', 'select randomly from matched set (can be combined with --limit)')
-  .option('-n, --lineNumber', 'add line numbers to output')
   .option('-j, --json', 'full results object as JSON')
   .option('-c, --compact', 'when used with --json, outputs compact format')
-  .option('- , --stdin', 'read <url> from STDIN');
+  .option('-n, --line-umber', 'add line numbers to output')
+  .option('- , --stdin', 'read <url>(s) from STDIN')
+  .option('--sep <seperator>', 'seperator for multiple matches', sanitize, '\n')
+  .option('--request-options <request-options>', 'options for "request" as relaxed JSON, "{foo: bar}"')
+;
 
 // samples
 require('./samples').init(program);
@@ -63,7 +65,12 @@ if (program.stdin) {
 
 // run
 function run(url, selector) {
-  return quget.run(url, selector, program).then(done);
+  return quget
+    .run(url, selector, program)
+    .then(done)
+    .catch(function(){
+      process.exit(-1);
+    });
 }
 
 function done(result) {
@@ -72,6 +79,7 @@ function done(result) {
   } else {
     console.log(result);
   }
+ process.exit(0);
 }
 
 function sanitize(text) {
