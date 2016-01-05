@@ -37,12 +37,12 @@ if (program.stdin) {
   const getStdin = require('get-stdin');
   getStdin.tty = true;
 
-  getStdin().then(urls => {
+  getStdin().then(function(urls) {
     urls.split('\n')
-      .filter(url => {
+      .filter(function(url) {
         return !!url.trim();
       })
-      .map(url => {
+      .map(function() {
         var sep = url.indexOf(' '), // take selector from stdin if given
           sel = program.args[0];
 
