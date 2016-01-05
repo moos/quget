@@ -114,7 +114,7 @@ The Amazon Whisperer
 
 For other examples, run `quget samples`. (Note: samples are run using Node's `child_process.exec()` which gobbles colors in output streams.  To see the colors, run the command directly from the shell.)
 
-### Run samples interactively
+#### Run samples interactively
 ```bash
 $ quget samples
 Choose a sample to run:
@@ -131,7 +131,7 @@ Choose a sample to run:
 >
 ```
 
-### Run a sample
+#### Run a sample
 ```bash
 $ quget samples 1
 Running:
@@ -147,13 +147,13 @@ quget http://news.ycombinator.com ".title > a" -l 7 -n
 7. When coding style survives compilation: De-anonymizing programmers from binaries
 ```
 
-### Simple
+#### Simple
 ```bash
 $ quget http://www.google.com/search?q=the+price+of+gold "td._dmh < tr" --limit 1
 Gold Price Per Ounce$1,075.20$3.90
 ```
 
-### With JSON output
+#### With JSON output
 ```bash
 $ quget http://www.google.com/search?q=the+price+of+gold "td._dmh < tr" --limit 1 --json
 [
@@ -207,7 +207,7 @@ $ quget http://www.google.com/search?q=the+price+of+gold "td._dmh < tr" --limit 
 ]
 ```
 
-### With JSON compact
+#### With JSON compact
 ```bash
 $ quget http://www.google.com/search?q=the+price+of+gold "td._dmh < tr" --limit 1 --json --compact
 [{"type":"tag","name":"tr","attribs":{},"children":[{"type":"tag","name":"td","attribs":{"class":"_dmh"},"children":[{"data"
@@ -216,7 +216,7 @@ $ quget http://www.google.com/search?q=the+price+of+gold "td._dmh < tr" --limit 
 torIndex":0}]
 ```
 
-### With line numbers
+#### With line numbers
 ```bash
 $ quget http://www.google.com/search?q=the+price+of+gold "td._dmh < tr" -n
 1. Gold Price Per Ounce$1,075.20$3.90
@@ -224,7 +224,7 @@ $ quget http://www.google.com/search?q=the+price+of+gold "td._dmh < tr" -n
 3. Gold Price Per Kilo$34,568.46$125.39
 ```
 
-### Select at random
+#### Select at random
 ```bash
 $ quget "https://www.reddit.com/r/oneliners/top/?sort=top&t=year" "a.title|colorize" --limit 3 --rand
 Ever since I've installed Adblock, all the single girls in my area seem to have lost interest
@@ -232,7 +232,7 @@ My poor knowledge of Greek mythology has always been my Achilles' elbow.
 Jokes about socialism aren't funny unless you share them with everyone.
 ```
 
-### Custom template
+#### Custom template
 ```bash
 $ quget http://www.google.com/search?q=the+price+of+gold "td._dmh < tr|yellow"  -T "#{{index|incr}} {{ty
 pe|upcase}} {{name}} has {{children.length}} children: {{.|text}}"
@@ -242,7 +242,7 @@ pe|upcase}} {{name}} has {{children.length}} children: {{.|text}}"
 ```
 See [Markup.js](https://github.com/adammark/Markup.js) for template help.
 
-### Custom HTTP headers
+#### Custom HTTP headers
 Any options for [request](https://github.com/request/request#requestoptions-callback) can be entered in a *relaxed* [jsonic](https://github.com/rjrodger/jsonic) format using `--request-options`.
  
 ```bash
@@ -253,7 +253,7 @@ $ quget https://api.github.com/users/moos  --request-options "headers:{\"User-Ag
 {"login":"moos","id":233047,"avatar_url":"https://avatars.githubusercontent.com/u/233047?v=3", [snip]
 ```
 
-### Define an alias
+#### Define an alias
 ```bash
 $ alias def='function _blah(){ quget https://www.bing.com/search?q=define+$@ "#b_results ol:first-child|bold"; };_blah'
 $ def foo
