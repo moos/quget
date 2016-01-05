@@ -14,7 +14,7 @@ program
   .option('-r, --rand', 'select randomly from matched set (can be combined with --limit)')
   .option('-j, --json', 'full results object as JSON')
   .option('-c, --compact', 'when used with --json, outputs compact format')
-  .option('-n, --line-umber', 'add line numbers to output')
+  .option('-n, --line-number', 'add line numbers to output')
   .option('- , --stdin', 'read <url>(s) from STDIN')
   .option('--sep <seperator>', 'seperator for multiple matches', sanitize, '\n')
   .option('--request-options <request-options>', 'options for "request" as relaxed JSON, "{foo: bar}"')
