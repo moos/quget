@@ -1,6 +1,6 @@
 {
   "name": "quget",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "dependencies": {
     "chalk"    : {
       "version": "1.1.1",
@@ -54,9 +54,9 @@
       "version": "1.8.3",
       "from": "underscore@latest"
     },
-    "get-stdin": {
-      "version": "5.0.1",
-      "from": "get-stdin@>=5.0.0 <6.0.0"
+    "get-stdin-with-tty": {
+      "version": "5.0.2",
+      "from": "get-stdin-with-tty@>=5.0.0 <6.0.0"
     },
     "jsonic": {
       "version": "0.2.2",

@@ -57,7 +57,7 @@ phanan / koel
     -r, --rand                           select randomly from matched set (can be combined with --limit)       
     -j, --json                           full results object as JSON                                           
     -c, --compact                        when used with --json, outputs compact format                         
-    -n, --line-umber                     add line numbers to output                                            
+    -n, --line-number                    add line numbers to output                                            
     - , --stdin                          read <url>(s) from STDIN                                              
     --sep <seperator>                    seperator for multiple matches                                        
     --request-options <request-options>  options for "request" as relaxed JSON, "{foo: bar}"                   
