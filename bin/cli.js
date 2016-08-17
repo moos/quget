@@ -31,23 +31,23 @@ program.parse(process.argv);
 if (program.done) return;
 if (program.args.length < 1 && !program.stdin) return console.log(program.helpInformation());
 
-//console.log(program);
+//console.log(program.args);
 
 if (program.stdin) {
-  const getStdin = require('get-stdin');
+  const getStdin = require('get-stdin-with-tty');
   getStdin.tty = true;
 
   getStdin().then(function(urls) {
-    urls.split('\n')
+    urls.split(/\r?\n/)
       .filter(function(url) {
         return !!url.trim();
       })
-      .map(function() {
+      .map(function(url) {
         var sep = url.indexOf(' '), // take selector from stdin if given
           sel = program.args[0];
 
         if (sep > 0) {
-          sel = url.substr(sep + 1);
+          sel = url.substr(sep + 1).trim() || sel;
           url = url.substr(0, sep);
         }
         return function(){
