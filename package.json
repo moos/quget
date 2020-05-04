@@ -1,6 +1,6 @@
 {
-  "name": "quget",
-  "version": "0.4.1",
+  "name": "qsel",
+  "version": "0.5.0",
   "description": "Get web snippets from the command-line.",
   "main": "src/quget.js",
   "bin": "bin/cli.js",
