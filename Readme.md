@@ -37,31 +37,30 @@ phanan / koel
 
 ## Usage
 
-```bash
+```shell
 
   Usage: quget [command] [options] <url> [selector] | -
 
-  Example: quget http://news.ycombinator.com ".title > a|bold|red" -l 5
+  Example: quget http://news.ycombinator.com ".title > a|bold|red" --limit 5
 
-  Commands:
+  Options:                                                                                                         
+    -o, --outfile <file>                 file to output to (default: stdout)                                       
+    -q, --quite                          quite the logging                                                         
+    -T, --template <template>            template "node: {{name}}, text {{.|text}}"                                
+    -l, --limit <count>                  limit query to count matches (-count from bottom) (default: 0)            
+    -r, --rand                           select randomly from matched set (can be combined with --limit)           
+    -j, --json                           full results object as (pretty) JSON                                      
+    -c, --compact                        when used with --json, outputs compact format                             
+    -n, --line-number                    add line numbers to output                                                
+    - , --stdin                          read <url>(s) from STDIN                                                  
+    --sep <seperator>                    seperator for multiple matches (default: "\n")                            
+    --request-options <request-options>  options for "request" as relaxed JSON, "{foo: bar}"                       
+    -h, --help                           output usage information                                                  
+    -V, --version                        output the version number                                                 
 
-    samples [N]  show samples, or run sample N
-    help [what]  get extra help with: pipes, selector, request-options
-
-  Options:
-
-    -h, --help                           output usage information                                              
-    -V, --version                        output the version number                                             
-    -T, --template <template>            template "node: {{name}}, text {{.|text}}"                            
-    -l, --limit <count>                  limit query to count matches (-count from bottom)                     
-    -r, --rand                           select randomly from matched set (can be combined with --limit)       
-    -j, --json                           full results object as JSON                                           
-    -c, --compact                        when used with --json, outputs compact format                         
-    -n, --line-number                    add line numbers to output                                            
-    - , --stdin                          read <url>(s) from STDIN                                              
-    --sep <seperator>                    seperator for multiple matches                                        
-    --request-options <request-options>  options for "request" as relaxed JSON, "{foo: bar}"                   
-
+Commands:                                                                                              
+   samples [N]                          show samples, or run sample N                                   
+   help [what]                          get extra help with: pipes, selector, request-options           
 ```
 
 ## Selectors
@@ -103,7 +102,7 @@ Use `\n` to add a new line, e.g. `selector|after \n\n`. For complete list, run `
 
 quget can be forced to read from STDIN, either interactively or in a shell pipe, by providing the single dash option `-`.  In this mode, each line of input is read as a url and executed in order.  Each line may also contain its own `selector`.  If none is given, the `selector` from the CLI is used.
 
-```bash
+```shell
 $ quget http://news.ycombinator.com ".title > a@href" -l 3 | quget - "title|pack"
 Page not found | Docker Blog
 Permission to Fail - Michelle Wetzler of Keen IO
@@ -265,6 +264,7 @@ quget relies on a [fork of css-select](https://github.com/moos/css-select) which
 
 ## Change log
 
+- 0.4.0 - Add `--outfile` and `--quite` options
 - 0.3.3 - Update cheerio to 0.22.0 compatible with lodash 4.17
 - 0.3.2 - Use moos/cheerio to pick up moos/css-select.  
 - 0.3.1 - Add `npm-shrinkwrap.json` back in as it's needed to pick up the right `css-select` for `cheerio`

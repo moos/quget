@@ -26,7 +26,7 @@ exports.run = function run(url, selector, options) {
     // make request
     request(req, function (err, response, html) {
       if (err) {
-        console.log(utils.error(err));
+        console.error(utils.error(err));
         return reject(err);
       }
       if (!selector) {

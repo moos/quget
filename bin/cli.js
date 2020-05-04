@@ -2,6 +2,7 @@
 
 var
   program = require('commander'),
+  fs = require('fs'),
   version = require('../package.json').version,
   quget = require('../src/quget');
 
@@ -9,10 +10,12 @@ program
   .version(version)
   .usage('[command] [options] <url> [selector] | -\n'
     + '\n  Example: quget http://news.ycombinator.com ".title > a|bold|red" -l 5')
+  .option('-o, --outfile <file>', 'file to output to (default: stdout)')
+  .option('-q, --quite', 'quite the logging')
   .option('-T, --template <template>', 'template "node: {{name}}, text {{.|text}}"')
   .option('-l, --limit <count>', 'limit query to count matches (-count from bottom)', parseInt, 0)
   .option('-r, --rand', 'select randomly from matched set (can be combined with --limit)')
-  .option('-j, --json', 'full results object as JSON')
+  .option('-j, --json', 'full results object as (pretty) JSON')
   .option('-c, --compact', 'when used with --json, outputs compact format')
   .option('-n, --line-number', 'add line numbers to output')
   .option('- , --stdin', 'read <url>(s) from STDIN')
@@ -37,6 +40,9 @@ if (program.stdin) {
   const getStdin = require('get-stdin-with-tty');
   getStdin.tty = true;
   var collector = [];
+  var getData = function() {
+    return program.compact ? collector : collector.join(program.sep);
+  };
 
   getStdin().then(function(urls) {
     urls.split(/\r?\n/)
@@ -52,13 +58,16 @@ if (program.stdin) {
           url = url.substr(0, sep);
         }
         return function(){
+          if (!program.quite) {
+            console.log('<<<', url);
+          }
           return quget
             .run(url, sel, program)
             .then(function(res){
               collector.push(res);
             })
             .catch(function(err) {
-              done(collector.join(program.sep));  // output what we have so far
+              done(getData());  // output what we have so far
               console.error('\nError - aborting.', err);
               process.exit(-1);
             });
@@ -68,7 +77,7 @@ if (program.stdin) {
       return next = next.then(fn);
     }, Promise.resolve())
     .then(function() {
-      done(collector.join(program.sep));
+      done(getData());
     });
   });
 } else {
@@ -89,7 +98,14 @@ function done(result) {
   if (program.compact) {
     quget.compactJson(result);
   } else {
-    console.log(result);
+    if (program.outfile) {
+      fs.writeFileSync(program.outfile, result);
+      if (!program.quite) {
+        console.log('>>> Written to:', program.outfile);
+      }
+    } else {
+      console.log(result);
+    }
   }
  process.exit(0);
 }
