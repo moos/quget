@@ -1,6 +1,6 @@
 {
   "name": "quget",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "Get web snippets from the command-line.",
   "main": "src/quget.js",
   "bin": "bin/cli.js",
@@ -14,7 +14,8 @@
     "cheerio",
     "request",
     "scrapper",
-    "selector"
+    "selector",
+    "css selectors"
   ],
   "author": "Moos",
   "license": "MIT",
@@ -26,7 +27,7 @@
     "chalk": "^1.0.0",
     "cheerio": "^0.19.0",
     "commander": "^2.3.0",
-    "get-stdin-with-tty": "^5.0.2",
+    "get-stdin-with-tty": "^6.0.0",
     "jsonic": "^0.2.2",
     "markup-js": "^1.5.20",
     "promptly": "^0.2.0",
