@@ -1,6 +1,6 @@
 {
   "name": "quget",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Get web snippets from the command-line.",
   "main": "src/quget.js",
   "bin": "bin/cli.js",
@@ -8,6 +8,11 @@
     "type": "git",
     "url": "http://github.com/moos/quget"
   },
+  "files": [
+    "bin",
+    "src",
+    "npm-shrinkwrap.json"
+  ],
   "keywords": [
     "jquery",
     "wget",
@@ -27,6 +32,7 @@
     "chalk": "^1.0.0",
     "cheerio": "^0.19.0",
     "commander": "^2.3.0",
+    "css-select": "https://github.com/moos/css-select/tarball/v1.2.0+moos",
     "get-stdin-with-tty": "^6.0.0",
     "jsonic": "^0.2.2",
     "markup-js": "^1.5.20",

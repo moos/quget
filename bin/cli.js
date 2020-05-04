@@ -36,7 +36,7 @@ if (program.args.length < 1 && !program.stdin) return console.log(program.helpIn
 if (program.stdin) {
   const getStdin = require('get-stdin-with-tty');
   getStdin.tty = true;
-  let collector = [];
+  var collector = [];
 
   getStdin().then(function(urls) {
     urls.split(/\r?\n/)
