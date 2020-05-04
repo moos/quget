@@ -24,6 +24,13 @@ module.exports = function(Mark) {
   Mark.pipes.quote.help = 'Surround with text: |quote \\n';
 
 
+  Mark.pipes.tag = function(str, text){
+    text = sanitize(text);
+    return `<${text}>${str}</${text}>`;
+  };
+  Mark.pipes.tag.help = 'Enclose with <tag />: |tag foo';
+
+
   Mark.pipes.incr = function(str, count){
     count = count || 1;
     return Number(str) + count;

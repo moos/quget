@@ -7,9 +7,8 @@ var
   quget = require('../src/quget');
 
 program
-  .version(version)
   .usage('[command] [options] <url> [selector] | -\n'
-    + '\n  Example: quget http://news.ycombinator.com ".title > a|bold|red" -l 5')
+    + '\n  Example: quget http://news.ycombinator.com ".title > a|bold|red" -limit 5')
   .option('-o, --outfile <file>', 'file to output to (default: stdout)')
   .option('-q, --quite', 'quite the logging')
   .option('-T, --template <template>', 'template "node: {{name}}, text {{.|text}}"')
@@ -21,6 +20,7 @@ program
   .option('- , --stdin', 'read <url>(s) from STDIN')
   .option('--sep <seperator>', 'seperator for multiple matches', sanitize, '\n')
   .option('--request-options <request-options>', 'options for "request" as relaxed JSON, "{foo: bar}"')
+  .version(version)
 ;
 
 // samples

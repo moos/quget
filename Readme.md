@@ -91,6 +91,7 @@ Additional pipes are defined in (src/pipes/basic.js):
 - `|after text` - add text after each match
 - `|before text` - add text before each match
 - `|quote text` - add text before and after each match
+- `|tag name` - enclose match in &lt;name&gt; and &lt;/name&gt;
 - `|incr N` - increment the match value by N (default 1)  
 - `|decr N` - decrement the match value by N (default 1)
 - `|regex (foo.*)` - match by regex
@@ -264,6 +265,7 @@ quget relies on a [fork of css-select](https://github.com/moos/css-select) which
 
 ## Change log
 
+- 0.4.1 - Add `|tag foo` pipe.
 - 0.4.0 - Add `--outfile` and `--quite` options
 - 0.3.3 - Update cheerio to 0.22.0 compatible with lodash 4.17
 - 0.3.2 - Use moos/cheerio to pick up moos/css-select.  
