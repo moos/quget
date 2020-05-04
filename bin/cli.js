@@ -36,6 +36,7 @@ if (program.args.length < 1 && !program.stdin) return console.log(program.helpIn
 if (program.stdin) {
   const getStdin = require('get-stdin-with-tty');
   getStdin.tty = true;
+  let collector = [];
 
   getStdin().then(function(urls) {
     urls.split(/\r?\n/)
@@ -51,16 +52,27 @@ if (program.stdin) {
           url = url.substr(0, sep);
         }
         return function(){
-          return run(url, sel, done);
+          return quget
+            .run(url, sel, program)
+            .then(function(res){
+              collector.push(res);
+            })
+            .catch(function(err) {
+              done(collector.join(program.sep));  // output what we have so far
+              console.error('\nError - aborting.', err);
+              process.exit(-1);
+            });
         };
     })
     .reduce(function(next, fn) {
       return next = next.then(fn);
-    }, Promise.resolve());
-
+    }, Promise.resolve())
+    .then(function() {
+      done(collector.join(program.sep));
+    });
   });
 } else {
-  run(program.args[0], program.args[1] || '', done);
+  run(program.args[0], program.args[1] || '');
 }
 
 // run
@@ -87,4 +99,3 @@ function sanitize(text) {
     .replace(/\\t/g, '\t')
     .replace(/\\n/g, '\n')
 }
-

@@ -47,7 +47,7 @@ phanan / koel
 
     samples [N]  show samples, or run sample N
     help [what]  get extra help with: pipes, selector, request-options
-    
+
   Options:
 
     -h, --help                           output usage information                                              
@@ -102,7 +102,7 @@ Use `\n` to add a new line, e.g. `selector|after \n\n`. For complete list, run `
 ## Shell pipe
 
 quget can be forced to read from STDIN, either interactively or in a shell pipe, by providing the single dash option `-`.  In this mode, each line of input is read as a url and executed in order.  Each line may also contain its own `selector`.  If none is given, the `selector` from the CLI is used.
-  
+
 ```bash
 $ quget http://news.ycombinator.com ".title > a@href" -l 3 | quget - "title|pack"
 Page not found | Docker Blog
@@ -244,7 +244,7 @@ See [Markup.js](https://github.com/adammark/Markup.js) for template help.
 
 #### Custom HTTP headers
 Any options for [request](https://github.com/request/request#requestoptions-callback) can be entered in a *relaxed* [jsonic](https://github.com/rjrodger/jsonic) format using `--request-options`.
- 
+
 ```bash
 $ quget https://api.github.com/users/moos
 Request forbidden by administrative rules. Please make sure your request has a User-Agent header (http://developer.github.com/v3/#user-agent-required). Check https://developer.github.com for other possible causes.
@@ -262,6 +262,11 @@ $ def foo
 
 ## Package note
 quget relies on a [fork of css-select](https://github.com/moos/css-select) which supplies the matched selector index in the list of matched elements.  Since css-select is a dependency of cheerio, it ues `npm shrinkwrap` to load the fork.  Any updates to cheerio will require manually updating the shrinkwrap json file.  Hopefully with upcoming npm 3's flat dependency tree, this shebang can be eliminated.
+
+## Change log
+
+- 0.3.0 Fix reading multiple URLs from STDIN
+- 0.2.4 Early version
 
 ## License
 
