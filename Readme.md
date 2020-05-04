@@ -265,10 +265,11 @@ quget relies on a [fork of css-select](https://github.com/moos/css-select) which
 
 ## Change log
 
-- 0.3.2 Use moos/cheerio to pick up moos/css-select.  
-- 0.3.1 Add `npm-shrinkwrap.json` back in as it's needed to pick up the right `css-select` for `cheerio`
-- 0.3.0 Fix reading multiple URLs from STDIN
-- 0.2.4 Early version
+- 0.3.3 - Update cheerio to 0.22.0 compatible with lodash 4.17
+- 0.3.2 - Use moos/cheerio to pick up moos/css-select.  
+- 0.3.1 - Add `npm-shrinkwrap.json` back in as it's needed to pick up the right `css-select` for `cheerio`
+- 0.3.0 - Fix reading multiple URLs from STDIN
+- 0.2.4 - Early version
 
 ## License
 
