@@ -37,7 +37,7 @@ phanan / koel
 
 ## Usage
 
-```shell
+```text
 
   Usage: qsel [command] [options] <url> [selector] | -
 
@@ -53,6 +53,7 @@ phanan / koel
     -c, --compact                        when used with --json, outputs compact format                             
     -n, --line-number                    add line numbers to output                                                
     - , --stdin                          read <url>(s) from STDIN                                                  
+    -p, --pause <seconds>                time to pause between batch requests (default: 0 secs)
     --sep <seperator>                    seperator for multiple matches (default: "\n")                            
     --request-options <request-options>  options for "request" as relaxed JSON, "{foo: bar}"                       
     -h, --help                           output usage information                                                  
@@ -265,6 +266,7 @@ qsel relies on a [fork of css-select](https://github.com/moos/css-select) which 
 
 ## Change log
 
+- 0.6.0 - Add `---pause` options for batch operations
 - 0.5.0 - Renamed package to **qsel** (query selector)
 - 0.4.1 - Add `|tag foo` pipe.
 - 0.4.0 - Add `--outfile` and `--quite` options

@@ -18,6 +18,7 @@ program
   .option('-c, --compact', 'when used with --json, outputs compact format')
   .option('-n, --line-number', 'add line numbers to output')
   .option('- , --stdin', 'read <url>(s) from STDIN')
+  .option('-p, --pause <seconds>', 'time to pause between batch requests', parseFloat, 0)
   .option('--sep <seperator>', 'seperator for multiple matches', sanitize, '\n')
   .option('--request-options <request-options>', 'options for "request" as relaxed JSON, "{foo: bar}"')
   .version(version)
@@ -35,6 +36,14 @@ if (program.done) return;
 if (program.args.length < 1 && !program.stdin) return console.log(program.helpInformation());
 
 //console.log(program.args);
+
+function pause() {
+  var secs = program.pause;
+  console.log(4444, secs)
+  return new Promise(function(resolve){
+    setTimeout(resolve, secs * 1000);
+  });
+}
 
 if (program.stdin) {
   const getStdin = require('get-stdin-with-tty');
@@ -74,7 +83,7 @@ if (program.stdin) {
         };
     })
     .reduce(function(next, fn) {
-      return next = next.then(fn);
+      return next = next.then(fn).then(pause);
     }, Promise.resolve())
     .then(function() {
       done(getData());
