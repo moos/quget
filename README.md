@@ -44,20 +44,23 @@ phanan / koel
   Example: qsel http://news.ycombinator.com ".title > a|bold|red" --limit 5
 
   Options:                                                                                                         
-    -o, --outfile <file>                 file to output to (default: stdout)                                       
-    -q, --quite                          quite the logging                                                         
     -T, --template <template>            template "node: {{name}}, text {{.|text}}"                                
     -l, --limit <count>                  limit query to count matches (-count from bottom) (default: 0)            
     -r, --rand                           select randomly from matched set (can be combined with --limit)           
     -j, --json                           full results object as (pretty) JSON                                      
     -c, --compact                        when used with --json, outputs compact format                             
-    -n, --line-number                    add line numbers to output                                                
-    - , --stdin                          read <url>(s) from STDIN                                                  
-    -p, --pause <seconds>                time to pause between batch requests (default: 0 secs)
-    --sep <seperator>                    seperator for multiple matches (default: "\n")                            
+    -n, --line-number                    add line numbers to output
     --request-options <request-options>  options for "request" as relaxed JSON, "{foo: bar}"                       
     -h, --help                           output usage information                                                  
     -V, --version                        output the version number                                                 
+
+Batch processing options:
+    - , --stdin                          read <url>(s) from STDIN                                                  
+    -o, --outfile <file>                 file to output to (default: stdout)                                       
+    -q, --quite                          quite the logging                                                         
+    -p, --pause <seconds>                pause between batch requests (default: 0.0 secs)
+    --sep <seperator>                    seperator for multiple matches (default: "\n")                            
+    --tag <tag>                          enclose complete result in <tag></tag>
 
 Commands:                                                                                              
    samples [N]                          show samples, or run sample N                                   
@@ -139,14 +142,14 @@ Running:
 qsel http://news.ycombinator.com ".title > a" -l 7 -n
  Hacker News titles
 
-1. Dear Architects: Sound Matters
-2. Best things and stuff of 2015
-3. Spotify Hit with $150M Class Action Over Unpaid Royalties
-4. Dolphin Smalltalk Goes Open-Source
-5. Starters and Maintainers
-6. Postgres features and tips
-7. When coding style survives compilation: De-anonymizing programmers from binaries
-```
+ 1. Apple, Google ban location tracking in apps using their contact-tracing system
+ 2. Extremely disillusioned with technology. Please help
+ 3. Stealing your SMS messages with iOS 0day
+ 4. Experts Doubt the Sun Is Burning Coal (1863)
+ 5. I gave away my books and sales increased
+ 6. Iloveyou
+ 7. Backblaze B2 Cloud Storage Now Has S3 Compatible APIs
+ ```
 
 #### Simple
 ```bash
@@ -226,15 +229,15 @@ $ qsel http://www.google.com/search?q=the+price+of+gold "td._dmh < tr" -n
 ```
 
 #### Select at random
-```bash
+```text
 $ qsel "https://www.reddit.com/r/oneliners/top/?sort=top&t=year" "a.title|colorize" --limit 3 --rand
-Ever since I've installed Adblock, all the single girls in my area seem to have lost interest
-My poor knowledge of Greek mythology has always been my Achilles' elbow.
-Jokes about socialism aren't funny unless you share them with everyone.
+"DO NOT TOUCH" must be one of the most terrifying things to read in braille.
+I can't believe no one has managed to come up with a cure for anorexia yet, honestly, I thought it'd be a piece of.
+Gravity is one of the most fundamental forces in the universe, but if you remove it, you get gravy.
 ```
 
 #### Custom template
-```bash
+```text
 $ qsel http://www.google.com/search?q=the+price+of+gold "td._dmh < tr|yellow"  -T "#{{index|incr}} {{ty
 pe|upcase}} {{name}} has {{children.length}} children: {{.|text}}"
 #1 TAG tr has 3 children: Gold Price Per Ounce$1,075.20$3.90
@@ -266,7 +269,8 @@ qsel relies on a [fork of css-select](https://github.com/moos/css-select) which 
 
 ## Change log
 
-- 0.6.0 - Add `---pause` options for batch operations
+- 0.7.0 - Add `--tag` option.  Write results out incrementally in batch ops.
+- 0.6.0 - Add `---pause` option for batch operations
 - 0.5.0 - Renamed package to **qsel** (query selector)
 - 0.4.1 - Add `|tag foo` pipe.
 - 0.4.0 - Add `--outfile` and `--quite` options

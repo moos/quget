@@ -18,8 +18,9 @@ program
   .option('-c, --compact', 'when used with --json, outputs compact format')
   .option('-n, --line-number', 'add line numbers to output')
   .option('- , --stdin', 'read <url>(s) from STDIN')
-  .option('-p, --pause <seconds>', 'time to pause between batch requests', parseFloat, 0)
+  .option('-p, --pause <seconds>', 'pause between batch requests', parseFloat, 0)
   .option('--sep <seperator>', 'seperator for multiple matches', sanitize, '\n')
+  .option('--tag <tag>', 'enclose complete result in <tag></tag>', '')
   .option('--request-options <request-options>', 'options for "request" as relaxed JSON, "{foo: bar}"')
   .version(version)
 ;
@@ -39,7 +40,6 @@ if (program.args.length < 1 && !program.stdin) return console.log(program.helpIn
 
 function pause() {
   var secs = program.pause;
-  console.log(4444, secs)
   return new Promise(function(resolve){
     setTimeout(resolve, secs * 1000);
   });
@@ -48,12 +48,11 @@ function pause() {
 if (program.stdin) {
   const getStdin = require('get-stdin-with-tty');
   getStdin.tty = true;
-  var collector = [];
-  var getData = function() {
-    return program.compact ? collector : collector.join(program.sep);
-  };
 
   getStdin().then(function(urls) {
+    // init output
+    write(true);
+
     urls.split(/\r?\n/)
       .filter(function(url) {
         return !!url.trim();
@@ -73,12 +72,12 @@ if (program.stdin) {
           return quget
             .run(url, sel, program)
             .then(function(res){
-              collector.push(res);
+              write(res);  // output as we get results
             })
             .catch(function(err) {
-              done(getData());  // output what we have so far
+              write(false); // end tag
               console.error('\nError - aborting.', err);
-              process.exit(-1);
+              doneErr();
             });
         };
     })
@@ -86,7 +85,8 @@ if (program.stdin) {
       return next = next.then(fn).then(pause);
     }, Promise.resolve())
     .then(function() {
-      done(getData());
+      write(false); // end tag
+      done();
     });
   });
 } else {
@@ -97,26 +97,51 @@ if (program.stdin) {
 function run(url, selector) {
   return quget
     .run(url, selector, program)
+    .then(write)
     .then(done)
-    .catch(function(){
-      process.exit(-1);
-    });
+    .catch(doneErr);
 }
 
-function done(result) {
-  if (program.compact) {
-    quget.compactJson(result);
+function getTag(init) {
+  if (!program.tag) return '';
+  return init
+    ? '<' + program.tag + '>'
+    : '</' + program.tag + '>';
+}
+
+function write(result) {
+  var init = result === true;
+  var end = result === false;
+  var data = !init && !end;
+
+  if (data && program.compact) {
+    quget.compactJson(result); // compact only writes to stdout
   } else {
+    result = data ? result : getTag(result);
     if (program.outfile) {
-      fs.writeFileSync(program.outfile, result);
-      if (!program.quite) {
-        console.log('>>> Written to:', program.outfile);
+      writeFile(result, init);
+      if (data && !program.quite) {
+        console.log('  > written to:', program.outfile);
       }
     } else {
-      console.log(result);
+      console.log(result + program.sep);
     }
   }
- process.exit(0);
+}
+
+// atomic write file
+function writeFile(data, init) {
+  var fd = fs.openSync(program.outfile, init ? 'w' : 'as');
+  fs.writeSync(fd, Buffer.from(data, 'utf-8') + program.sep);
+  fs.closeSync(fd);
+}
+
+function done(code) {
+  process.exit(code || 0);
+}
+
+function doneErr(code) {
+  done(code || -1);
 }
 
 function sanitize(text) {
