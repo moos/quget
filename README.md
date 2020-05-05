@@ -269,6 +269,7 @@ qsel relies on a [fork of css-select](https://github.com/moos/css-select) which 
 
 ## Change log
 
+- 0.7.1 - Add better logging for batch ops.
 - 0.7.0 - Add `--tag` option.  Write results out incrementally in batch ops.
 - 0.6.0 - Add `---pause` option for batch operations
 - 0.5.0 - Renamed package to **qsel** (query selector)

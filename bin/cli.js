@@ -57,7 +57,7 @@ if (program.stdin) {
       .filter(function(url) {
         return !!url.trim();
       })
-      .map(function(url) {
+      .map(function(url, index, list) {
         var sep = url.indexOf(' '), // take selector from stdin if given
           sel = program.args[0];
 
@@ -67,7 +67,7 @@ if (program.stdin) {
         }
         return function(){
           if (!program.quite) {
-            console.log('<<<', url);
+            console.log(`<<< ${1 + index}/${list.length}:`, url);
           }
           return quget
             .run(url, sel, program)
