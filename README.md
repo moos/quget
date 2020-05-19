@@ -1,7 +1,7 @@
 # qsel -  web snippets from the command-line
 
 [![NPM version](https://img.shields.io/npm/v/qsel.svg)](https://www.npmjs.com/package/qsel)
-[![Build Status](https://img.shields.io/travis/moos/qsel/master.svg)](https://travis-ci.org/moos/qsel)
+[![Build Status](https://img.shields.io/travis/moos/quget/master.svg)](https://travis-ci.org/moos/quget)
 
 ## Introduction
 qsel (formerly `quget`) brings together the power of [request](https://github.com/request/request), [cheerio](https://github.com/cheeriojs/cheerio), and jQuery-like CSS selectors to the command-line.
